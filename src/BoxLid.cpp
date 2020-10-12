@@ -1,11 +1,9 @@
 #include "BoxLid.h"
 
-BoxLid::BoxLid(/* args */)
-{
+BoxLid::BoxLid(/* args */) {
 }
 
-BoxLid::~BoxLid()
-{
+BoxLid::~BoxLid() {
 }
 
 std::vector<Tile*> BoxLid::getTiles() {

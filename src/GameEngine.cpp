@@ -2,7 +2,7 @@
 #include "Tile.h"
 
 #include <random>
-
+#include <iostream>
 GameEngine::GameEngine(int randomSeed)
     : game_history(new GameHistory()),
       game_state(GameState::START),
@@ -13,7 +13,9 @@ GameEngine::GameEngine(int randomSeed)
 }
 
 GameEngine::GameEngine(GameHistory* gameHistory)
-    : game_history(gameHistory), game_state(GameState::START) {
+    : game_history(gameHistory), 
+      game_state(GameState::START),
+      box_lid(new BoxLid()) {
   this->loadGameSetUp(gameHistory);
 }
 
@@ -38,7 +40,6 @@ GameEngine::~GameEngine() {
 
 void GameEngine::loadGameSetUp(const GameHistory* gameHistory) {
   this->tile_bag = gameHistory->getInitialTiles();
-
   for (Player* player : gameHistory->getPlayers()) {
     bool first_player = this->players.size() == 0;
     this->players.push_back(player);

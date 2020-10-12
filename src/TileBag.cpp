@@ -3,6 +3,10 @@
 #include <random>
 #include <iostream>
 
+TileBag::TileBag() {
+  tile_bag = new LinkedList<Tile*>;
+}
+
 TileBag::TileBag(int randomSeed) {
   this->randomSeed = randomSeed;  
   this->initialTiledBag();

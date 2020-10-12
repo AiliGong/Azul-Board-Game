@@ -11,6 +11,8 @@ const Colour tilecolour[NUM_OF_TILECOLOUR] = {Colour::DARK_BLUE, Colour::YELLOW,
 class TileBag {
  public:
   TileBag(int randomSeed);
+  TileBag();
+
   ~TileBag();
 
 
