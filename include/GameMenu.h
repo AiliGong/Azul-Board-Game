@@ -9,7 +9,7 @@
 class GameMenu {
  private:
   GameEngine* ge;
-
+  int randomSeed;
   // load a saved game
   void loadGame(std::string filename);
 
@@ -19,6 +19,7 @@ class GameMenu {
 
  public:
   GameMenu();
+  GameMenu(int randomSeed);
 
   // start a new game
   void newGame();

@@ -1,0 +1,13 @@
+*.o
+obj/
+*.d
+*.dSYM
+*.plist
+
+*DS_Store
+.vscode
+
+azul
+tests_bin/*
+tests/output/
+*.zip

@@ -8,6 +8,7 @@
 #include "GameHistory.h"
 #include "Player.h"
 #include "TileBag.h"
+#include "BoxLid.h"
 
 // GameEngine implements the state machine shown below.
 //
@@ -76,10 +77,12 @@ class GameEngine {
   GameHistory* game_history;
   GameState game_state;
   TileBag* tile_bag;
+  BoxLid* box_lid;
   std::vector<Player*> players;
   std::vector<Factory*> factories;
   Player* next_player;
   unsigned int rounds_played;
+  int randomSeed;
 
   void loadGameSetUp(const GameHistory* gameHistory);
 
@@ -102,7 +105,7 @@ class GameEngine {
   void decideWinner();
 
  public:
-  GameEngine();
+  GameEngine(int randomSeed);
   GameEngine(GameHistory* gameHistory);
   ~GameEngine();
 

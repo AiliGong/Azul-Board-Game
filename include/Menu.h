@@ -6,6 +6,7 @@
 class Menu {
  private:
   GameMenu* game;
+  int randomSeed;
   void welcomeMessage();
   void startingMenu();
   void printCredits();
@@ -16,6 +17,8 @@ class Menu {
 
  public:
   Menu();
+  Menu(const char* randomSeed);
+
   ~Menu();
 
   void start();

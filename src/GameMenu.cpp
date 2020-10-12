@@ -1,6 +1,14 @@
 #include "GameMenu.h"
 
-GameMenu::GameMenu() : ge(new GameEngine()) {}
+GameMenu::GameMenu() {
+  this->randomSeed = -1;
+  ge = new GameEngine(randomSeed);
+}
+
+GameMenu::GameMenu(int randomSeed) {
+  this->randomSeed = randomSeed;
+  ge = new GameEngine(randomSeed);
+}
 
 void GameMenu::newGame() {
   std::cout << "Starting a New Game" << std::endl;

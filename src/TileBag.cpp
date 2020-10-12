@@ -1,13 +1,27 @@
 #include "TileBag.h"
 #include "Constants.h"
+#include <random>
+#include <iostream>
 
-TileBag::TileBag()
-{
+TileBag::TileBag(int randomSeed) {
+  this->randomSeed = randomSeed;  
+  this->initialTiledBag();
+}
+
+TileBag::~TileBag() {
+  delete tile_bag;
+}
+
+void TileBag::initialTiledBag() {
   tile_bag = new LinkedList<Tile*>;
+  if (randomSeed < 0) {
+    this->initialStandardBag();
+  } else {
+    this->initialRandomizedBag();
+  }
+}
 
-  Colour tilecolour[NUM_OF_TILECOLOUR] = {Colour::DARK_BLUE, Colour::YELLOW,
-                                          Colour::RED, Colour::BLACK,
-                                          Colour::LIGHT_BLUE};
+void TileBag::initialStandardBag() {
   Tile* tile;
   for (int i = 0; i < TOTAL_NUM_OF_TILE; ++i) {
     tile = new Tile(tilecolour[i % NUM_OF_TILECOLOUR]);
@@ -15,10 +29,15 @@ TileBag::TileBag()
   }
 }
 
-TileBag::~TileBag(){
-  delete tile_bag;
+void TileBag::initialRandomizedBag() {
+  std::vector<Tile*> allTiles;
+  Tile* tile;
+  for (int i = 0; i != TOTAL_NUM_OF_TILE; ++i) {
+      tile = new Tile(tilecolour[i % NUM_OF_TILECOLOUR]);
+      allTiles.push_back(tile);
+  }
+  fillBag(allTiles);
 }
-
 
 void TileBag::addBack(Tile* tile) {
   tile_bag->add_back(tile);
@@ -61,3 +80,23 @@ Tile* TileBag::pop() {
   this->removeFront();
   return returnTile;
 }
+
+void TileBag::fillBag(BoxLid* box_lid) {
+  if (size() > 0) {
+    throw new std::logic_error("Tile bag is not empty.");
+  }
+  fillBag(box_lid->getTiles());
+  box_lid->clear();
+}
+
+void TileBag::fillBag(std::vector<Tile*> tiles_to_add) {
+  if (randomSeed >= 0 ) {
+    std::shuffle(tiles_to_add.begin(), tiles_to_add.end(), 
+                std::default_random_engine(randomSeed));
+  }
+  
+  for (Tile* tile : tiles_to_add) {
+    tile_bag->add_back(tile);
+  }
+}
+

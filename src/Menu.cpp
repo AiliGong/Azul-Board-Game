@@ -6,7 +6,13 @@
 #include "GameHistory.h"
 #include "GameMenu.h"
 
-Menu::Menu() {}
+Menu::Menu() {
+  this->randomSeed = -1;
+}
+
+Menu::Menu(const char* randomSeed) {
+  this->randomSeed = atoi(randomSeed);
+}
 
 Menu::~Menu() {
   delete this->game;
@@ -96,7 +102,7 @@ void Menu::printCredits() {
 }
 
 void Menu::newGame() {
-  this->game = new GameMenu();
+  this->game = new GameMenu(randomSeed);
   this->game->newGame();
 }
 

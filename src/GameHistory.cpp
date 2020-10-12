@@ -31,7 +31,9 @@ GameHistory* GameHistory::loadFromFile(std::string filename) {
   }
 
   GameHistory* gh = new GameHistory();
-  gh->initial_tiles = new TileBag();
+
+  //TODO add random seed
+  gh->initial_tiles = new TileBag(0);
   gh->readSaveFile(savefile);
   savefile.close();
   return gh;

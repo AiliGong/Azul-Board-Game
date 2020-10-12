@@ -3,11 +3,13 @@
 
 #include <random>
 
-GameEngine::GameEngine()
+GameEngine::GameEngine(int randomSeed)
     : game_history(new GameHistory()),
       game_state(GameState::START),
-      tile_bag(new TileBag()) {
+      tile_bag(new TileBag(randomSeed)),
+      box_lid(new BoxLid()) {
   this->game_history->setInitialTiles(this->tile_bag);
+  this->randomSeed = randomSeed;
 }
 
 GameEngine::GameEngine(GameHistory* gameHistory)
@@ -143,6 +145,9 @@ void GameEngine::fillFactories() {
   // skips central factory
   for (int i = 1; i != NUM_OF_ALL_FACTORIES; ++i) {
     for (int j = 0; j != NUM_OF_TILES_EACH_FAC; ++j) {
+      if (this->tile_bag->size() == 0) {
+        tile_bag->fillBag(box_lid);
+      }
       this->factories[i]->addTile(tile_bag->pop());  // add the head to factory
     }
   }
@@ -180,7 +185,7 @@ bool GameEngine::playerMovement(Player* player, const Turn* turn) {
   if (checkEndOfRound()) {
     ++rounds_played;
 
-    bool game_over = rounds_played == TOTAL_NUM_OF_GAME_ROUND;
+    bool game_over = (rounds_played == TOTAL_NUM_OF_GAME_ROUND);
     if (game_over) {
       game_state = GameState::END_OF_GAME;
     } else {
@@ -284,7 +289,7 @@ void GameEngine::moveTileAfterEachRound(Player* player) {
     if (player->getMosaic()->isStorageRowFull(i)) {
       Colour colour = player->getMosaic()->getStorageRowColour(i);
       for (Tile* tile : player->getMosaic()->moveTileToGrid(i)) {
-        tile_bag->addBack(tile);
+        box_lid->addBack(tile);
       }
       // update points
       points += player->getMosaic()->calScore(i, colour);
@@ -299,7 +304,7 @@ void GameEngine::moveTileAfterEachRound(Player* player) {
     if (tile->getColour() == Colour::FIRST_PLAYER) {
       factories[0]->addTile(tile);
     } else {
-      tile_bag->addBack(tile);
+      box_lid->addBack(tile);
     }
   }
   player->getMosaic()->getBrokenTiles()->clear();

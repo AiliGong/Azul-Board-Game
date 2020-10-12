@@ -13,7 +13,7 @@ const unsigned int NUM_OF_FACTORIES = 5;
 const unsigned int NUM_OF_ALL_FACTORIES = 6;
 const unsigned int NUM_OF_TILES_EACH_FAC = 4;
 // const unsigned int TOTAL_NUM_OF_GAME_ROUND =  5; // FIXME
-const unsigned int TOTAL_NUM_OF_GAME_ROUND = 1;
+const unsigned int TOTAL_NUM_OF_GAME_ROUND = 5;
 const unsigned int NUM_OF_PLAYERS = 2;
 
 // Any single tile indicator
