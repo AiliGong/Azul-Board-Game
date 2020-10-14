@@ -5,8 +5,8 @@
 Turn::Turn(unsigned int factory, Tile* tile, unsigned int storage_row)
     : factory(factory), tile(tile), storage_row(storage_row) {}
 
-Turn* Turn::parseCommand(std::string command) {
-  const std::regex turn_pattern(TURN_PATTERN);
+Turn* Turn::parseCommand(std::string command, Constants* constant) {
+  const std::regex turn_pattern(constant->getTURN_PATTERN());
 
   std::string turn_command;
   unsigned int factory;

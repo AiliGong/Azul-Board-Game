@@ -102,8 +102,29 @@ void Menu::printCredits() {
 }
 
 void Menu::newGame() {
-  this->game = new GameMenu(randomSeed);
+  std::string modeOption;
+
+  bool validInput = false;
+  
+  while (!validInput) {
+    this->newGameMenu();
+    std::cout << "> ";
+    std::getline(std::cin, modeOption);
+    if (modeOption == std::string("1") || modeOption == std::string("2") ||
+        modeOption == std::string("3")) {
+      validInput = true;
+    } else {
+      if (std::cin.good()) {
+        std::cout << "Invalid input" << std::endl;
+      } else {
+        exit();
+      }
+    }
+  }
+  Constants* constant = new Constants(stoi(modeOption));
+  this->game = new GameMenu(randomSeed, constant);
   this->game->newGame();
+
 }
 
 void Menu::loadGame() {
@@ -115,4 +136,14 @@ void Menu::loadGame() {
 
   this->game = new GameMenu();
   this->game->resumeGame(filename);
+}
+
+void Menu::newGameMenu() {
+  std::cout << std::endl;
+  std::cout << "Please choose game mode" << std::endl;
+  std::cout << "----" << std::endl;
+  std::cout << "1. Standard Mode" << std::endl;
+  std::cout << "2. Six Tile Mode" << std::endl;
+  std::cout << "3. Grey Mode" << std::endl;
+  std::cout << std::endl;
 }

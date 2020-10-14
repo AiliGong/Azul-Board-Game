@@ -2,12 +2,14 @@
 
 GameMenu::GameMenu() {
   this->randomSeed = -1;
-  ge = new GameEngine(randomSeed);
+  this->constant = new Constants(1);
+  ge = new GameEngine(randomSeed, constant);
 }
 
-GameMenu::GameMenu(int randomSeed) {
+GameMenu::GameMenu(int randomSeed, Constants* constant) {
+  this->constant = constant;
   this->randomSeed = randomSeed;
-  ge = new GameEngine(randomSeed);
+  ge = new GameEngine(randomSeed, constant);
 }
 
 void GameMenu::newGame() {
@@ -15,7 +17,8 @@ void GameMenu::newGame() {
   std::cout << std::endl;
 
   std::string player_name;
-  for (int i = 0; i != NUM_OF_PLAYERS; ++i) {
+  int num_of_players = ge->getConstant()->getNUM_OF_PLAYERS();
+  for (int i = 0; i != num_of_players; ++i) {
     std::cout << "Enter a name for player " << i + 1 << std::endl;
     std::cout << "> ";
     std::getline(std::cin, player_name);
@@ -89,7 +92,6 @@ void GameMenu::playRound() {
          this->ge->getState() != GameState::END_OF_GAME) {
     this->playTurn();
   }
-
   std::cout << "=== END OF ROUND ===" << std::endl << std::endl;
 }
 
@@ -117,7 +119,7 @@ void GameMenu::playTurn() {
     std::getline(std::cin, turn_command);
 
     try {
-      turn = Turn::parseCommand(turn_command);
+      turn = Turn::parseCommand(turn_command, constant);
       turn_success = this->ge->playTurn(turn);
       if (!turn_success) {
         std::cout << "Turn not possible at this time" << std::endl;
@@ -154,7 +156,7 @@ void GameMenu::printScores() const {
   bool draw = false;
 
   for (const Player* player : this->ge->getPlayers()) {
-    std::cout << player->getName() << ": " << player->getScore();
+    std::cout << player->getName() << ": " << player->getScore() << " ";
     if (!winner || player->getScore() > winner->getScore()) {
       winner = player;
     } else if (player->getScore() == winner->getScore()) {

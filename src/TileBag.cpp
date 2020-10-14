@@ -7,10 +7,16 @@ TileBag::TileBag() {
   tile_bag = new LinkedList<Tile*>;
 }
 
-TileBag::TileBag(int randomSeed) {
+TileBag::TileBag(int randomSeed, Constants* constant) {
   this->randomSeed = randomSeed;  
+  this->constant = constant;
   this->initialTiledBag();
 }
+
+TileBag::TileBag(TileBag &other) {
+  tile_bag = new LinkedList<Tile*>(*other.tile_bag);
+}
+
 
 TileBag::~TileBag() {
   delete tile_bag;
@@ -27,8 +33,8 @@ void TileBag::initialTiledBag() {
 
 void TileBag::initialStandardBag() {
   Tile* tile;
-  for (int i = 0; i < TOTAL_NUM_OF_TILE; ++i) {
-    tile = new Tile(tilecolour[i % NUM_OF_TILECOLOUR]);
+  for (int i = 0; i < constant->getTOTAL_NUM_OF_TILE(); ++i) {
+    tile = new Tile(tilecolour[i % constant->getNUM_OF_TILECOLOUR()]);
     this->addBack(tile);
   }
 }
@@ -36,8 +42,8 @@ void TileBag::initialStandardBag() {
 void TileBag::initialRandomizedBag() {
   std::vector<Tile*> allTiles;
   Tile* tile;
-  for (int i = 0; i != TOTAL_NUM_OF_TILE; ++i) {
-      tile = new Tile(tilecolour[i % NUM_OF_TILECOLOUR]);
+  for (int i = 0; i != constant->getTOTAL_NUM_OF_TILE(); ++i) {
+      tile = new Tile(tilecolour[i % constant->getNUM_OF_TILECOLOUR()]);
       allTiles.push_back(tile);
   }
   fillBag(allTiles);

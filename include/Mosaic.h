@@ -7,15 +7,15 @@
 #include "Constants.h"
 #include "Tile.h"
 
-const int defaultPattern[MOSAIC_GRID_DIM][MOSAIC_GRID_DIM] = {{0, 1, 2, 3, 4},
-                                                              {4, 0, 1, 2, 3},
-                                                              {3, 4, 0, 1, 2},
-                                                              {2, 3, 4, 0, 1},
-                                                              {1, 2, 3, 4, 0}};
+const int defaultPattern[5][5] = {{0, 1, 2, 3, 4},
+                                  {4, 0, 1, 2, 3},
+                                  {3, 4, 0, 1, 2},
+                                  {2, 3, 4, 0, 1},
+                                  {1, 2, 3, 4, 0}};
 
 class Mosaic {
  public:
-  Mosaic();
+  Mosaic(unsigned int grid_dim);
   ~Mosaic();
 
   // add a tile to the strorage row, tile will be added to brokenTiles if line
@@ -45,10 +45,12 @@ class Mosaic {
   bool isStorageRowFull(unsigned const int row);
 
  private:
-  Tile** storageRows[MOSAIC_GRID_DIM];
-  Tile* mosaicGrid[MOSAIC_GRID_DIM][MOSAIC_GRID_DIM];
+  std::vector<std::vector<Tile*>> storageRows;
+  std::vector<std::vector<Tile*>> mosaicGrid;
   BrokenTile* brokenTiles;
+  unsigned int grid_dim;
 
+  void initialMosaic();
   unsigned int checkStorageRowSize(unsigned const int row) const;
   bool storageRowIsEmpty(unsigned const int row) const;
   unsigned int findCol(unsigned const int row, Colour colour) const;

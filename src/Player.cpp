@@ -1,10 +1,11 @@
 #include "Player.h"
 
-Player::Player(std::string name, bool is_first_player) {
+Player::Player(std::string name, bool is_first_player, Constants* constant) {
   this->name = name;
   score = 0;
-  mosaic = new Mosaic();
   this->is_first_player = is_first_player;
+  this->constant = constant;
+  mosaic = new Mosaic(constant->getMOSAIC_GRID_DIM());
 }
 
 Player::~Player() {
@@ -16,10 +17,11 @@ void Player::setScore(unsigned int score) {
 }
 
 void Player::updateScoreBy(int points) {
-  score += points;
-
-  if (score < 0) {
+  
+  if ((score + points) < 0) {
     score = 0;
+  } else {
+    score += points;
   }
 }
 

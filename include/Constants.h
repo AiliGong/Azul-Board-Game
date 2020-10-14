@@ -3,36 +3,71 @@
 
 #include <string>
 
-const unsigned int MOSAIC_GRID_DIM = 5;
+class Constants
+{
+private:
+    unsigned int NUM_OF_TILECOLOUR;
+    unsigned int MOSAIC_GRID_DIM;
 
-const unsigned int NUM_OF_TILECOLOUR = 5;
-const unsigned int NUM_OF_TILE_EACH_COLOUR = 20;
-const unsigned int TOTAL_NUM_OF_TILE =
-    NUM_OF_TILECOLOUR * NUM_OF_TILE_EACH_COLOUR;
-const unsigned int NUM_OF_FACTORIES = 5;
-const unsigned int NUM_OF_ALL_FACTORIES = 6;
-const unsigned int NUM_OF_TILES_EACH_FAC = 4;
-// const unsigned int TOTAL_NUM_OF_GAME_ROUND =  5; // FIXME
-const unsigned int TOTAL_NUM_OF_GAME_ROUND = 5;
-const unsigned int NUM_OF_PLAYERS = 2;
+    unsigned int NUM_OF_TILE_EACH_COLOUR;
+    unsigned int TOTAL_NUM_OF_TILE;
+    unsigned int NUM_OF_FACTORIES;
+    unsigned int NUM_OF_ALL_FACTORIES;
+    unsigned int NUM_OF_TILES_EACH_FAC;
+    unsigned int TOTAL_NUM_OF_GAME_ROUND;
+    unsigned int NUM_OF_PLAYERS;
 
-// Any single tile indicator
-const std::string TILE_PATTERN = "[RYBLU]";
+    // Any single tile indicator
+    std::string TILE_PATTERN;
 
-const std::string FACTORY_INDEX_PATTERN =
-    "[0-" + std::to_string(NUM_OF_FACTORIES) + "]";
+    std::string FACTORY_INDEX_PATTERN;
 
-const std::string STORAGE_ROW_INDEX_PATTERN =
-    "[0-" + std::to_string(MOSAIC_GRID_DIM) + "]";
+    std::string STORAGE_ROW_INDEX_PATTERN;
 
-// Literal "turn" followed by valid factory index (0 represents the broken
-// tile row), tile indicator, and storage row index, all separated by spaces
-const std::string TURN_PATTERN = "^turn " + FACTORY_INDEX_PATTERN + " " +
-                                 TILE_PATTERN + " " +
-                                 STORAGE_ROW_INDEX_PATTERN + "$";
+    // Literal "turn" followed by valid factory index (0 represents the broken
+    // tile row), tile indicator, and storage row index, all separated by spaces
+    std::string TURN_PATTERN;
 
-// Exactly TOTAL_NUM_OF_TILE tile indicators, without separators
-const std::string INITIAL_TILES_PATTERN =
-    "^(" + TILE_PATTERN + "){" + std::to_string(TOTAL_NUM_OF_TILE) + "}$";
+    // Exactly TOTAL_NUM_OF_TILE tile indicators, without separators
+    std::string INITIAL_TILES_PATTERN;
+
+    void initialConstants(unsigned int mode);
+
+
+public:
+    Constants(unsigned int mode);
+    ~Constants();
+    void standardMode();
+    void sixTileMode();
+    void greyMode();
+
+    unsigned int getNUM_OF_TILECOLOUR();
+    unsigned int getMOSAIC_GRID_DIM();
+
+    unsigned int getNUM_OF_TILE_EACH_COLOUR();
+    unsigned int getTOTAL_NUM_OF_TILE();
+    unsigned int getNUM_OF_FACTORIES();
+    unsigned int getNUM_OF_ALL_FACTORIES();
+    unsigned int getNUM_OF_TILES_EACH_FAC();
+    unsigned int getTOTAL_NUM_OF_GAME_ROUND();
+    unsigned int getNUM_OF_PLAYERS();
+
+    // Any single tile indicator
+    std::string getTILE_PATTERN();
+
+    std::string getFACTORY_INDEX_PATTERN();
+
+    std::string getSTORAGE_ROW_INDEX_PATTERN();
+
+    // Literal "turn" followed by valid factory index (0 represents the broken
+    // tile row), tile indicator, and storage row index, all separated by spaces
+    std::string getTURN_PATTERN();
+
+    // Exactly TOTAL_NUM_OF_TILE tile indicators, without separators
+    std::string getINITIAL_TILES_PATTERN();
+
+    
+
+};
 
 #endif  // CONSTANTS_H

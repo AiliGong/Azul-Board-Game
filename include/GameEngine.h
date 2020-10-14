@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "TileBag.h"
 #include "BoxLid.h"
+#include "Constants.h"
 
 // GameEngine implements the state machine shown below.
 //
@@ -82,7 +83,8 @@ class GameEngine {
   std::vector<Factory*> factories;
   Player* next_player;
   unsigned int rounds_played;
-  int randomSeed;
+  int random_seed;
+  Constants* constant;
 
   void loadGameSetUp(const GameHistory* gameHistory);
 
@@ -105,7 +107,7 @@ class GameEngine {
   void decideWinner();
 
  public:
-  GameEngine(int randomSeed);
+  GameEngine(int random_seed, Constants* constant);
   GameEngine(GameHistory* gameHistory);
   ~GameEngine();
 
@@ -124,6 +126,8 @@ class GameEngine {
   std::vector<Player*> getPlayers() const;
 
   void saveGame(std::string filename) const;
+  Constants* getConstant() const;
+
 };
 
 #endif  // GAMEENGINE_H

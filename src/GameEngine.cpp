@@ -3,13 +3,18 @@
 
 #include <random>
 #include <iostream>
-GameEngine::GameEngine(int randomSeed)
+GameEngine::GameEngine(int random_seed, Constants* constant)
     : game_history(new GameHistory()),
       game_state(GameState::START),
-      tile_bag(new TileBag(randomSeed)),
       box_lid(new BoxLid()) {
+  this->random_seed = random_seed;
+  this->constant = constant;
+  this->game_history->setRandomSeed(this->random_seed);
+  // this->constant = new Constants();//TODO
+  this->tile_bag = new TileBag(random_seed, constant);
+  this->game_history->setConstant(this->constant);
   this->game_history->setInitialTiles(this->tile_bag);
-  this->randomSeed = randomSeed;
+
 }
 
 GameEngine::GameEngine(GameHistory* gameHistory)
@@ -39,6 +44,7 @@ GameEngine::~GameEngine() {
 }
 
 void GameEngine::loadGameSetUp(const GameHistory* gameHistory) {
+  this->constant = gameHistory->getConstant();
   this->tile_bag = gameHistory->getInitialTiles();
   for (Player* player : gameHistory->getPlayers()) {
     bool first_player = this->players.size() == 0;
@@ -63,7 +69,7 @@ void GameEngine::addPlayer(std::string name) {
   }
 
   bool first_player = this->players.size() == 0;
-  Player* player = new Player(name, first_player);
+  Player* player = new Player(name, first_player, constant);
   this->players.push_back(player);
   this->game_history->addPlayer(name);
 
@@ -102,7 +108,7 @@ void GameEngine::initFactories() {
   fac = nullptr;
 
   // add five factories
-  for (int i = 1; i < NUM_OF_ALL_FACTORIES; ++i) {
+  for (int i = 1; i < constant->getNUM_OF_ALL_FACTORIES(); ++i) {
     fac = new Factory(i);
     factories.push_back(fac);
     fac = nullptr;
@@ -144,10 +150,11 @@ void GameEngine::startRound() {
 
 void GameEngine::fillFactories() {
   // skips central factory
-  for (int i = 1; i != NUM_OF_ALL_FACTORIES; ++i) {
-    for (int j = 0; j != NUM_OF_TILES_EACH_FAC; ++j) {
+  for (int i = 1; i != constant->getNUM_OF_ALL_FACTORIES(); ++i) {
+    for (int j = 0; j != constant->getNUM_OF_TILES_EACH_FAC(); ++j) {
       if (this->tile_bag->size() == 0) {
         tile_bag->fillBag(box_lid);
+        this->game_history->addTileBagInGame(tile_bag);
       }
       this->factories[i]->addTile(tile_bag->pop());  // add the head to factory
     }
@@ -173,7 +180,8 @@ bool GameEngine::playerMovement(Player* player, const Turn* turn) {
   unsigned int row = turn->getPatternLine();
 
   bool factory_is_legal = factories[facNum]->colourExists(colour) &&
-                          row <= MOSAIC_GRID_DIM && facNum <= NUM_OF_FACTORIES;
+                          row <= constant->getMOSAIC_GRID_DIM() && 
+                          facNum <= constant->getNUM_OF_FACTORIES();
   bool row_is_legal = player->getMosaic()->isValidForColour(row, colour);
 
   if (factory_is_legal && row_is_legal) {
@@ -186,9 +194,10 @@ bool GameEngine::playerMovement(Player* player, const Turn* turn) {
   if (checkEndOfRound()) {
     ++rounds_played;
 
-    bool game_over = (rounds_played == TOTAL_NUM_OF_GAME_ROUND);
+    bool game_over = (rounds_played == constant->getTOTAL_NUM_OF_GAME_ROUND());
     if (game_over) {
       game_state = GameState::END_OF_GAME;
+      moveTileAfterEachRound();
     } else {
       game_state = GameState::END_OF_ROUND;
       moveTileAfterEachRound();
@@ -286,7 +295,7 @@ void GameEngine::moveTileAfterEachRound(Player* player) {
   //  update points for player
 
   int points = 0;
-  for (int i = 1; i != MOSAIC_GRID_DIM + 1; ++i) {
+  for (int i = 1; i != constant->getMOSAIC_GRID_DIM() + 1; ++i) {
     if (player->getMosaic()->isStorageRowFull(i)) {
       Colour colour = player->getMosaic()->getStorageRowColour(i);
       for (Tile* tile : player->getMosaic()->moveTileToGrid(i)) {
@@ -361,3 +370,8 @@ Player* GameEngine::getPlayerByName(const std::string playerName) const {
 void GameEngine::saveGame(std::string filename) const {
   this->game_history->saveToFile(filename);
 }
+
+Constants* GameEngine::getConstant() const {
+  return this->constant;
+}
+

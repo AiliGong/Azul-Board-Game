@@ -2,27 +2,15 @@
 #include <stdexcept>
 #include <string>
 
-Mosaic::Mosaic() {
-  for (int i = 0; i < MOSAIC_GRID_DIM; i++) {
-    for (int j = 0; j < MOSAIC_GRID_DIM; j++) {
-      mosaicGrid[i][j] = nullptr;
-    }
-  }
-
-  for (int i = 0; i < MOSAIC_GRID_DIM; i++) {
-    storageRows[i] = new Tile*[i + 1];
-    for (int j = 0; j < i + 1; j++) {
-      storageRows[i][j] = nullptr;
-    }
-  }
-
-  brokenTiles = new BrokenTile();
+Mosaic::Mosaic(unsigned int grid_dim) {
+  this->grid_dim = grid_dim;
+  this->initialMosaic();
 }
 
 Mosaic::~Mosaic() {
 //delete grid
-for (int i = 0; i < MOSAIC_GRID_DIM; i++) {
-  for (int j = 0; j < MOSAIC_GRID_DIM; j++) {
+for (int i = 0; i < grid_dim; i++) {
+  for (int j = 0; j < grid_dim; j++) {
     if (mosaicGrid[i][j] != nullptr) {
       delete mosaicGrid[i][j];
       mosaicGrid[i][j] = nullptr;
@@ -31,7 +19,7 @@ for (int i = 0; i < MOSAIC_GRID_DIM; i++) {
 }
 
   //delete storage rows
-  for (int i = 0; i < MOSAIC_GRID_DIM; i++) {
+  for (int i = 0; i < grid_dim; i++) {
     storageRows[i] = new Tile*[i + 1];
     for (int j = 0; j < i + 1; j++) {
       if (storageRows[i][j] != nullptr) {
@@ -44,6 +32,24 @@ for (int i = 0; i < MOSAIC_GRID_DIM; i++) {
   //delete broken tiles
   delete brokenTiles;
 }
+
+void Mosaic::initialMosaic() {
+  for (int i = 0; i < grid_dim; i++) {
+    for (int j = 0; j < grid_dim; j++) {
+      mosaicGrid[i][j] = nullptr;
+    }
+  }
+
+  for (int i = 0; i < grid_dim; i++) {
+    storageRows[i] = new Tile*[i + 1];
+    for (int j = 0; j < i + 1; j++) {
+      storageRows[i][j] = nullptr;
+    }
+  }
+
+  brokenTiles = new BrokenTile();  
+}
+
 
 void Mosaic::addTileToStorage(Tile* tileToBeAdded, unsigned const int row) {
   int rowSize = checkStorageRowSize(row);
@@ -91,7 +97,7 @@ bool Mosaic::isValidForColour(unsigned const int row, Colour colour) {
   if (row != 0) {
     if (storageRowIsEmpty(row)) {
       // check grid
-      for (int i = 0; i != MOSAIC_GRID_DIM; ++i) {
+      for (int i = 0; i != grid_dim; ++i) {
         if (mosaicGrid[row - 1][i] != nullptr &&
             mosaicGrid[row - 1][i]->getColour() == colour) {
           returnVal = false;
@@ -116,10 +122,10 @@ Colour Mosaic::getStorageRowColour(unsigned const int row) const {
 
 std::string Mosaic::str() const {
   std::string returnVal = "";
-  for (int i = 0; i != MOSAIC_GRID_DIM; ++i) {
+  for (int i = 0; i != grid_dim; ++i) {
     returnVal += (std::to_string(i + 1) + ": ");
 
-    for (int m = 0; m < MOSAIC_GRID_DIM - i - 1; ++m) {
+    for (int m = 0; m < grid_dim - i - 1; ++m) {
       returnVal += "  ";
     }
 
@@ -132,7 +138,7 @@ std::string Mosaic::str() const {
     }
     returnVal += "|| ";
 
-    for (int r = 0; r != MOSAIC_GRID_DIM; ++r) {
+    for (int r = 0; r != grid_dim; ++r) {
       if (mosaicGrid[i][r] == nullptr) {
         returnVal += ". ";
       } else {
@@ -166,7 +172,7 @@ unsigned int Mosaic::calScore(unsigned const int row,
 
   // horizontal - right
   int r = col + 1;
-  while (mosaicGrid[row - 1][r - 1] != nullptr && r <= MOSAIC_GRID_DIM) {
+  while (mosaicGrid[row - 1][r - 1] != nullptr && r <= grid_dim) {
     h_score++;
     r++;
   }
@@ -181,7 +187,7 @@ unsigned int Mosaic::calScore(unsigned const int row,
 
   // vertical - down
   int d = row + 1;
-  while (mosaicGrid[d - 1][col - 1] != nullptr && d <= MOSAIC_GRID_DIM) {
+  while (mosaicGrid[d - 1][col - 1] != nullptr && d <= grid_dim) {
     v_score++;
     d++;
   }
@@ -228,7 +234,7 @@ bool Mosaic::storageRowIsEmpty(unsigned const int row) const {
 // private
 unsigned int Mosaic::findCol(unsigned const int row, Colour colour) const {
   unsigned int col = 0;
-  for (int i = 0; i != MOSAIC_GRID_DIM; ++i) {
+  for (int i = 0; i != grid_dim; ++i) {
     if (defaultPattern[row - 1][i] == colour) {
       col = i + 1;
     }

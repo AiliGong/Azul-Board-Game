@@ -5,14 +5,14 @@
 #include "BoxLid.h"
 #include "Constants.h"
 
-const Colour tilecolour[NUM_OF_TILECOLOUR] = {Colour::DARK_BLUE, Colour::YELLOW,
+const Colour tilecolour[5] = {Colour::DARK_BLUE, Colour::YELLOW,
                                               Colour::RED, Colour::BLACK,
                                               Colour::LIGHT_BLUE};
 class TileBag {
  public:
-  TileBag(int randomSeed);
-  TileBag();
-
+  TileBag(); //TODO <<=======
+  TileBag(TileBag &other);
+  TileBag(int randomSeed, Constants* constant);
   ~TileBag();
 
 
@@ -33,7 +33,7 @@ class TileBag {
   void removeFront();
   void clear();
   void fillBag(std::vector<Tile*> tiles_to_add);
-
+  Constants* constant;
 
 };
 

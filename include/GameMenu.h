@@ -5,11 +5,13 @@
 #include <iostream>
 
 #include "GameEngine.h"
+#include "Constants.h"
 
 class GameMenu {
  private:
   GameEngine* ge;
   int randomSeed;
+  Constants* constant;
   // load a saved game
   void loadGame(std::string filename);
 
@@ -19,7 +21,7 @@ class GameMenu {
 
  public:
   GameMenu();
-  GameMenu(int randomSeed);
+  GameMenu(int randomSeed, Constants* constant);
 
   // start a new game
   void newGame();

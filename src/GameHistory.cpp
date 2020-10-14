@@ -57,8 +57,15 @@ void GameHistory::addPlayer(std::string player_name) {
   }
 }
 
-void GameHistory::writeSaveFile(std::ostream& out) const {
+void GameHistory::writeSaveFile(std::ostream& out) const { 
+  if (random_seed >= 0 ) {
+    out << "#" << this->random_seed << std::endl;
+  }
   out << this->initial_tiles->getAllTileIni() << std::endl;
+  
+  for(TileBag* tile_bag : tile_bags_in_game) {
+      out << tile_bag->getAllTileIni() << std::endl;
+  }
 
   for (std::string player_name : this->player_names) {
     out << player_name << std::endl;
@@ -82,7 +89,7 @@ void GameHistory::readSaveFile(std::istream& file) {
 
   // first line contains space-separated tile colour indicators
   std::getline(file, line);
-  const std::regex initial_tiles_pattern(INITIAL_TILES_PATTERN);
+  const std::regex initial_tiles_pattern(constant->getINITIAL_TILES_PATTERN());
   std::smatch initial_tiles_match;
 
   if (!std::regex_match(line, initial_tiles_match, initial_tiles_pattern)) {
@@ -97,8 +104,8 @@ void GameHistory::readSaveFile(std::istream& file) {
 
   // then 2 player names (anything that's not a valid turn)
   int num_players = 0;
-  const std::regex turn_pattern(TURN_PATTERN);
-  while (num_players != NUM_OF_PLAYERS && std::getline(file, line)) {
+  const std::regex turn_pattern(constant->getTURN_PATTERN());
+  while (num_players != constant->getNUM_OF_PLAYERS() && std::getline(file, line)) {
     if (!std::regex_match(line, turn_pattern)) {
       this->addPlayer(line);
       ++num_players;
@@ -108,13 +115,13 @@ void GameHistory::readSaveFile(std::istream& file) {
     }
   }
 
-  if (num_players != NUM_OF_PLAYERS) {
+  if (num_players != constant->getNUM_OF_PLAYERS()) {
     throw std::runtime_error("Received fewer player names than expected");
   }
 
   // then any number of turns
   while (std::getline(file, line)) {
-    Turn* turn = Turn::parseCommand(line);
+    Turn* turn = Turn::parseCommand(line, constant);
     this->addTurn(turn);
   }
 }
@@ -127,7 +134,7 @@ void GameHistory::print(std::ostream& out) const {
   this->writeSaveFile(out);
 }
 
-void GameHistory::setInitialTiles(const TileBag* tiles) {
+void GameHistory::setInitialTiles(TileBag* tiles) {
   this->initial_tiles = new TileBag(*tiles);
 }
 
@@ -139,7 +146,7 @@ std::vector<Player*> GameHistory::getPlayers() const {
   std::vector<Player*> players = std::vector<Player*>();
 
   for (std::string name : this->player_names) {
-    players.push_back(new Player(name, false));
+    players.push_back(new Player(name, false, constant));
   }
 
   players[0]->setFirstPlayer();
@@ -149,4 +156,20 @@ std::vector<Player*> GameHistory::getPlayers() const {
 
 std::vector<const Turn*> GameHistory::getTurns() const {
   return this->turns;
+}
+
+void GameHistory::setRandomSeed(int random_seed) {
+  this->random_seed = random_seed;
+}
+
+void GameHistory::addTileBagInGame(TileBag* tile_bag) {
+  tile_bags_in_game.push_back(tile_bag);
+}
+
+Constants* GameHistory::getConstant() const {
+  return constant;
+}
+
+void GameHistory::setConstant(Constants* constant) {
+  this->constant = constant;
 }

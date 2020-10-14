@@ -1,6 +1,6 @@
 #include "BoxLid.h"
 
-BoxLid::BoxLid(/* args */) {
+BoxLid::BoxLid() {
 }
 
 BoxLid::~BoxLid() {

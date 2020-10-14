@@ -14,6 +14,7 @@ class Menu {
   void loadGame();
   void run(std::string& menuOption);
   void exit();
+  void newGameMenu();
 
  public:
   Menu();

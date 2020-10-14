@@ -12,7 +12,7 @@ class Turn {
   Turn(Turn& other);
   ~Turn();
 
-  static Turn* parseCommand(std::string command);
+  static Turn* parseCommand(std::string command, Constants* constant);
 
   unsigned int getFactory() const;
   Tile* getTile() const;
