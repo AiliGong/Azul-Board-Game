@@ -8,7 +8,6 @@ class Constants
 private:
     unsigned int NUM_OF_TILECOLOUR;
     unsigned int MOSAIC_GRID_DIM;
-
     unsigned int NUM_OF_TILE_EACH_COLOUR;
     unsigned int TOTAL_NUM_OF_TILE;
     unsigned int NUM_OF_FACTORIES;
@@ -16,6 +15,8 @@ private:
     unsigned int NUM_OF_TILES_EACH_FAC;
     unsigned int TOTAL_NUM_OF_GAME_ROUND;
     unsigned int NUM_OF_PLAYERS;
+    unsigned int BROKEN_TILE_SOLT;
+    bool GREY_MODE;
 
     // Any single tile indicator
     std::string TILE_PATTERN;
@@ -40,6 +41,9 @@ public:
     void standardMode();
     void sixTileMode();
     void greyMode();
+    void fiveTileGreyMode();
+    void sixTileGreyMode();
+
 
     unsigned int getNUM_OF_TILECOLOUR();
     unsigned int getMOSAIC_GRID_DIM();
@@ -51,6 +55,8 @@ public:
     unsigned int getNUM_OF_TILES_EACH_FAC();
     unsigned int getTOTAL_NUM_OF_GAME_ROUND();
     unsigned int getNUM_OF_PLAYERS();
+    unsigned int getBROKEN_TILE_SOLT();
+    bool getGREY_MODE();
 
     // Any single tile indicator
     std::string getTILE_PATTERN();

@@ -197,10 +197,10 @@ bool GameEngine::playerMovement(Player* player, const Turn* turn) {
     bool game_over = (rounds_played == constant->getTOTAL_NUM_OF_GAME_ROUND());
     if (game_over) {
       game_state = GameState::END_OF_GAME;
-      moveTileAfterEachRound();
+      // moveTileAfterEachRound();
     } else {
       game_state = GameState::END_OF_ROUND;
-      moveTileAfterEachRound();
+      // moveTileAfterEachRound();
     }
   }
 
@@ -302,26 +302,12 @@ void GameEngine::moveTileAfterEachRound(Player* player) {
         box_lid->addBack(tile);
       }
       // update points
-      points += player->getMosaic()->calScore(i, colour);
+      points = player->getMosaic()->calScore(i, colour);
+      player->updateScoreBy(points);
     }
   }
 
-  // minus points lost in broken tiles
-  points -= player->getMosaic()->getBrokenTiles()->calculateLostPoints();
-
-  // add broken tiles back to bag
-  for (Tile* tile : player->getMosaic()->getBrokenTiles()->getAllTiles()) {
-    if (tile->getColour() == Colour::FIRST_PLAYER) {
-      factories[0]->addTile(tile);
-    } else {
-      box_lid->addBack(tile);
-    }
-  }
-  player->getMosaic()->getBrokenTiles()->clear();
-
-  player->updateScoreBy(points);
-
-  player = nullptr;
+  moveBrokenTileBack(player);
 }
 
 std::string GameEngine::getNextPlayerName() const {
@@ -373,5 +359,43 @@ void GameEngine::saveGame(std::string filename) const {
 
 Constants* GameEngine::getConstant() const {
   return this->constant;
+}
+
+bool GameEngine::moveTileMannually(Player* player, unsigned int row, unsigned int col) {
+  if (!player->getMosaic()->isStorageRowFull(row)) {
+    throw new std::logic_error("The row is not full.");
+  }
+
+  Mosaic* mosaic = player->getMosaic();
+  bool occupied = mosaic->gridSpotOccupied(row, col);
+
+  if(!occupied) {
+    for (Tile* tile : mosaic->moveTileToGrid(row, col)) {
+      box_lid->addBack(tile);
+    }
+  }
+  // update points
+  int points = mosaic->calScore(row, col);
+  player->updateScoreBy(points);
+
+  return !occupied;
+}
+
+void GameEngine::moveBrokenTileBack(Player* player) {
+  // minus points lost in broken tiles
+  Mosaic* mosaic = player->getMosaic();
+  int points = mosaic->getBrokenTiles()->calculateLostPoints();
+
+  // add broken tiles back to bag
+  for (Tile* tile : mosaic->getBrokenTiles()->getAllTiles()) {
+    if (tile->getColour() == Colour::FIRST_PLAYER) {
+      factories[0]->addTile(tile);
+    } else {
+      box_lid->addBack(tile);
+    }
+  }
+  mosaic->getBrokenTiles()->clear();
+
+  player->updateScoreBy(points);
 }
 

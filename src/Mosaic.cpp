@@ -2,8 +2,9 @@
 #include <stdexcept>
 #include <string>
 
-Mosaic::Mosaic(unsigned int grid_dim) {
+Mosaic::Mosaic(unsigned int grid_dim, unsigned int broken_tile_slot) {
   this->grid_dim = grid_dim;
+  this->broken_tile_slot = broken_tile_slot;
   this->initialMosaic();
 }
 
@@ -34,6 +35,8 @@ for (int i = 0; i < grid_dim; i++) {
 }
 
 void Mosaic::initialMosaic() {
+  // std::vector<std::vector<Tile*>> a(5, std::vector<Tile*>(5, nullptr));
+  // mosaicGrid = a;
   for (int i = 0; i < grid_dim; i++) {
     for (int j = 0; j < grid_dim; j++) {
       mosaicGrid[i][j] = nullptr;
@@ -47,7 +50,7 @@ void Mosaic::initialMosaic() {
     }
   }
 
-  brokenTiles = new BrokenTile();  
+  brokenTiles = new BrokenTile(broken_tile_slot);  
 }
 
 
@@ -83,7 +86,29 @@ std::vector<Tile*> Mosaic::moveTileToGrid(unsigned const int row) {
   clearOneStorageRow(row);
 
   return tilesToBeAddedToBag;
+} 
+
+std::vector<Tile*> Mosaic::moveTileToGrid(unsigned const int row,   
+                                          unsigned const int col) {
+  std::vector<Tile*> tilesToBeAddedToBag;
+
+  if (!isStorageRowFull(row)) {
+    throw std::logic_error("this row is not full");
+  }
+
+  // transfer the ownership of the rightmost tile
+  mosaicGrid[row - 1][col - 1] = storageRows[row - 1][0];
+
+  // return other tiles, need to be added into bag
+  for (int i = 1; i != row; ++i) {
+    tilesToBeAddedToBag.push_back(storageRows[row - 1][i]);
+  }
+
+  clearOneStorageRow(row);
+
+  return tilesToBeAddedToBag;
 }
+
 
 void Mosaic::clearOneStorageRow(unsigned const int row) {
   for (int i = 0; i != row; ++i) {
@@ -240,4 +265,17 @@ unsigned int Mosaic::findCol(unsigned const int row, Colour colour) const {
     }
   }
   return col;
+}
+
+bool Mosaic::gridSpotOccupied(unsigned const int row, unsigned const int col) {
+  bool returnVal = false;
+
+  if (row > grid_dim || col > grid_dim || row == 0 || col == 0) {
+    returnVal = true;
+  } else {
+    if (mosaicGrid[row][col] != nullptr) {
+      returnVal = true;
+    }
+  }
+  return returnVal;
 }

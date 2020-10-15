@@ -10,6 +10,7 @@ GameMenu::GameMenu(int randomSeed, Constants* constant) {
   this->constant = constant;
   this->randomSeed = randomSeed;
   ge = new GameEngine(randomSeed, constant);
+
 }
 
 void GameMenu::newGame() {
@@ -70,12 +71,18 @@ void GameMenu::play() {
   // All roads lead here (unless we've loaded a game that has already finished)
   if (this->ge->getState() == GameState::START_OF_ROUND ||
       this->ge->getState() == GameState::END_OF_ROUND) {
+    if (this->ge->getState() == GameState::END_OF_ROUND) {
+      //movetile
+      this->moveTileAfterRound();
+    }
     while (this->ge->getState() != GameState::END_OF_GAME) {
       this->playRound();
     }  // -> END_OF_GAME
   }
 
   assert(this->ge->getState() == GameState::END_OF_GAME);
+  //move tile
+  this->moveTileAfterRound();
 
   std::cout << "=== GAME OVER ===" << std::endl << std::endl;
 
@@ -84,6 +91,7 @@ void GameMenu::play() {
 
 void GameMenu::playRound() {
   if (this->ge->getState() == GameState::END_OF_ROUND) {
+    this->moveTileAfterRound();
     this->ge->startRound();
   }
 
@@ -190,3 +198,50 @@ void GameMenu::testMode(std::string filename) {
     std::cout << e.what() << std::endl;
   }
 }
+
+void GameMenu::moveTileAfterRound() {
+  bool greyMode = this->constant->getGREY_MODE();
+  if(!greyMode) {
+    this->ge->moveTileAfterEachRound();
+  } else {
+    this->moveTileManually();
+  }
+}
+
+void GameMenu::moveTileManually() {
+  for (Player* player : this->ge->getPlayers()) {
+    std::cout << "Tile move for player "<< player->getName() << ": "<< std::endl;
+    printMosaic(player->getName());
+    this->moveTileManually(player);
+  }
+}
+
+void GameMenu::moveTileManually(Player* player) {
+  std::string col;
+  for (int i = 1; i != constant->getMOSAIC_GRID_DIM() + 1; ++i) {
+    if (player->getMosaic()->isStorageRowFull(i)) {
+      bool turn_success = false;
+
+      while (!turn_success) {
+        std::cout << "Please enter the column number for the tile in the "
+                  << i << " row"<< std::endl;
+        std::cout << "> ";
+        std::cin.peek();
+        std::getline(std::cin, col);
+
+        if (!std::cin.good()) {
+          throw new std::invalid_argument("EOF");
+        }
+        try {
+          int col_num = std::stoi(col);
+          turn_success = this->ge->moveTileMannually(player, i, col_num);
+        } catch (std::runtime_error& e) {
+          std::cout << "Invalid input" << std::endl;
+        }
+      }
+      std::cout << "Move successful." << std::endl << std::endl;
+    }    
+  }
+  this->ge->moveBrokenTileBack(player);
+}
+

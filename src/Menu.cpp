@@ -111,13 +111,13 @@ void Menu::newGame() {
     std::cout << "> ";
     std::getline(std::cin, modeOption);
     if (modeOption == std::string("1") || modeOption == std::string("2") ||
-        modeOption == std::string("3")) {
+        modeOption == std::string("3") ||modeOption == std::string("4")) {
       validInput = true;
     } else {
       if (std::cin.good()) {
         std::cout << "Invalid input" << std::endl;
       } else {
-        exit();
+        throw new std::invalid_argument("EOF");
       }
     }
   }
@@ -143,7 +143,8 @@ void Menu::newGameMenu() {
   std::cout << "Please choose game mode" << std::endl;
   std::cout << "----" << std::endl;
   std::cout << "1. Standard Mode" << std::endl;
-  std::cout << "2. Six Tile Mode" << std::endl;
-  std::cout << "3. Grey Mode" << std::endl;
+  std::cout << "2. Six Tile Colour Mode" << std::endl;
+  std::cout << "3. Five Tile Grey Mode" << std::endl;
+  std::cout << "4. Six Tile Grey Mode" << std::endl;
   std::cout << std::endl;
 }

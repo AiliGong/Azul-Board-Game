@@ -18,6 +18,10 @@ class GameMenu {
   void printFactories() const;
   void printMosaic(std::string player_name) const;
   void printScores() const;
+  void moveTileAfterRound();
+  void moveTileManually();
+  void moveTileManually(Player* player);
+
 
  public:
   GameMenu();

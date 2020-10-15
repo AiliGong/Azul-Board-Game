@@ -4,7 +4,6 @@
 #include <string>
 
 #include "BrokenTile.h"
-#include "Constants.h"
 #include "Tile.h"
 
 const int defaultPattern[5][5] = {{0, 1, 2, 3, 4},
@@ -15,7 +14,7 @@ const int defaultPattern[5][5] = {{0, 1, 2, 3, 4},
 
 class Mosaic {
  public:
-  Mosaic(unsigned int grid_dim);
+  Mosaic(unsigned int grid_dim, unsigned int broken_tile_slot);
   ~Mosaic();
 
   // add a tile to the strorage row, tile will be added to brokenTiles if line
@@ -24,6 +23,9 @@ class Mosaic {
 
   // move one tile to the grid and return all other tiles
   std::vector<Tile*> moveTileToGrid(unsigned const int row);
+  std::vector<Tile*> moveTileToGrid(unsigned const int row,   
+                                          unsigned const int col);
+                                          
 
   // clear the stroage row, set to nullptr
   void clearOneStorageRow(unsigned const int row);
@@ -43,18 +45,22 @@ class Mosaic {
   BrokenTile* getBrokenTiles() const;
 
   bool isStorageRowFull(unsigned const int row);
+  bool gridSpotOccupied(unsigned const int row, unsigned const int col);
+  unsigned int calScore(unsigned const int row, unsigned const int col) const;
 
  private:
-  std::vector<std::vector<Tile*>> storageRows;
-  std::vector<std::vector<Tile*>> mosaicGrid;
+  // std::vector<std::vector<Tile*>> storageRows;
+  // std::vector<std::vector<Tile*>> mosaicGrid;
+  Tile** storageRows[6];
+  Tile* mosaicGrid[6][6];
   BrokenTile* brokenTiles;
   unsigned int grid_dim;
+  unsigned int broken_tile_slot;
 
   void initialMosaic();
   unsigned int checkStorageRowSize(unsigned const int row) const;
   bool storageRowIsEmpty(unsigned const int row) const;
   unsigned int findCol(unsigned const int row, Colour colour) const;
-  unsigned int calScore(unsigned const int row, unsigned const int col) const;
 };
 
 #endif  // MOSAIC_H

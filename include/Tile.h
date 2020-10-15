@@ -9,6 +9,7 @@ enum Colour {
   DARK_BLUE,
   LIGHT_BLUE,
   BLACK,
+  ORANGE,
   FIRST_PLAYER,
   NONE,
 };
@@ -18,6 +19,7 @@ const char YELLOW_INI  = 'Y';
 const char DARK_BLUE_INI  = 'B';
 const char LIGHT_BLUE_INI  = 'L';
 const char BLACK_INI  = 'U';
+const char ORANGE_INI  = 'O';
 const char FIRST_PLAYER_INI  = 'F';
 const char NONE_INI  =  '.';
 

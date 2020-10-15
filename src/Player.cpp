@@ -5,7 +5,7 @@ Player::Player(std::string name, bool is_first_player, Constants* constant) {
   score = 0;
   this->is_first_player = is_first_player;
   this->constant = constant;
-  mosaic = new Mosaic(constant->getMOSAIC_GRID_DIM());
+  mosaic = new Mosaic(constant->getMOSAIC_GRID_DIM(), constant->getBROKEN_TILE_SOLT());
 }
 
 Player::~Player() {

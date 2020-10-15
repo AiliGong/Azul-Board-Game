@@ -29,6 +29,8 @@ std::string Tile::getColourInitial() const {
     tileInitial = LIGHT_BLUE_INI;
   } else if (colour == Colour::BLACK) {
     tileInitial = BLACK_INI;
+  } else if (colour == Colour::ORANGE) {
+    tileInitial = ORANGE_INI;
   } else if (colour == Colour::FIRST_PLAYER) {
     tileInitial = FIRST_PLAYER_INI;
   } else {
@@ -49,6 +51,8 @@ Tile::Tile(char tileIndicator) {
     this->colour = Colour::LIGHT_BLUE;
   else if (tileIndicator == BLACK_INI)
     this->colour = Colour::BLACK;
+  else if (tileIndicator == ORANGE_INI)
+    this->colour = Colour::ORANGE;  
   else if (tileIndicator == FIRST_PLAYER_INI)
     this->colour = Colour::FIRST_PLAYER;
   else if (tileIndicator == NONE_INI)

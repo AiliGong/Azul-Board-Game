@@ -5,9 +5,9 @@
 #include "BoxLid.h"
 #include "Constants.h"
 
-const Colour tilecolour[5] = {Colour::DARK_BLUE, Colour::YELLOW,
+const Colour tilecolour[6] = {Colour::DARK_BLUE, Colour::YELLOW,
                                               Colour::RED, Colour::BLACK,
-                                              Colour::LIGHT_BLUE};
+                                              Colour::LIGHT_BLUE, Colour::ORANGE};
 class TileBag {
  public:
   TileBag(); //TODO <<=======

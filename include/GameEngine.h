@@ -98,8 +98,6 @@ class GameEngine {
   void placeTilesToStorageRow(Player* player, const Turn* turn);
   void updateNextPlayer();
   bool checkEndOfRound();
-  // move tile into grid for each player, and update points
-  void moveTileAfterEachRound();
   void moveTileAfterEachRound(Player* player);
 
   void firstPlayerSetup();
@@ -127,7 +125,10 @@ class GameEngine {
 
   void saveGame(std::string filename) const;
   Constants* getConstant() const;
-
+  // move tile into grid for each player, and update points
+  void moveTileAfterEachRound();
+  bool moveTileMannually(Player* player, unsigned int row, unsigned int col);
+  void moveBrokenTileBack(Player* player);
 };
 
 #endif  // GAMEENGINE_H
