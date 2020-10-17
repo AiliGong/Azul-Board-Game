@@ -10,8 +10,8 @@ Mosaic::Mosaic(unsigned int grid_dim, unsigned int broken_tile_slot) {
 
 Mosaic::~Mosaic() {
 //delete grid
-for (int i = 0; i < grid_dim; i++) {
-  for (int j = 0; j < grid_dim; j++) {
+for (unsigned int i = 0; i < grid_dim; i++) {
+  for (unsigned int j = 0; j < grid_dim; j++) {
     if (mosaicGrid[i][j] != nullptr) {
       delete mosaicGrid[i][j];
       mosaicGrid[i][j] = nullptr;
@@ -20,9 +20,8 @@ for (int i = 0; i < grid_dim; i++) {
 }
 
   //delete storage rows
-  for (int i = 0; i < grid_dim; i++) {
-    storageRows[i] = new Tile*[i + 1];
-    for (int j = 0; j < i + 1; j++) {
+  for (unsigned int i = 0; i < grid_dim; i++) {
+    for (unsigned int j = 0; j < i + 1; j++) {
       if (storageRows[i][j] != nullptr) {
         delete storageRows[i][j];
         storageRows[i][j] = nullptr;
@@ -37,15 +36,15 @@ for (int i = 0; i < grid_dim; i++) {
 void Mosaic::initialMosaic() {
   // std::vector<std::vector<Tile*>> a(5, std::vector<Tile*>(5, nullptr));
   // mosaicGrid = a;
-  for (int i = 0; i < grid_dim; i++) {
-    for (int j = 0; j < grid_dim; j++) {
+  for (unsigned int i = 0; i < grid_dim; i++) {
+    for (unsigned int j = 0; j < grid_dim; j++) {
       mosaicGrid[i][j] = nullptr;
     }
   }
 
-  for (int i = 0; i < grid_dim; i++) {
+  for (unsigned int i = 0; i < grid_dim; i++) {
     storageRows[i] = new Tile*[i + 1];
-    for (int j = 0; j < i + 1; j++) {
+    for (unsigned int j = 0; j < i + 1; j++) {
       storageRows[i][j] = nullptr;
     }
   }
@@ -55,7 +54,7 @@ void Mosaic::initialMosaic() {
 
 
 void Mosaic::addTileToStorage(Tile* tileToBeAdded, unsigned const int row) {
-  int rowSize = checkStorageRowSize(row);
+  unsigned int rowSize = checkStorageRowSize(row);
 
   // if line is full, transfer the ownership to brokenTile
   if (rowSize == row) {
@@ -79,7 +78,7 @@ std::vector<Tile*> Mosaic::moveTileToGrid(unsigned const int row) {
   mosaicGrid[row - 1][col - 1] = storageRows[row - 1][0];
 
   // return other tiles, need to be added into bag
-  for (int i = 1; i != row; ++i) {
+  for (unsigned int i = 1; i != row; ++i) {
     tilesToBeAddedToBag.push_back(storageRows[row - 1][i]);
   }
 
@@ -100,7 +99,7 @@ std::vector<Tile*> Mosaic::moveTileToGrid(unsigned const int row,
   mosaicGrid[row - 1][col - 1] = storageRows[row - 1][0];
 
   // return other tiles, need to be added into bag
-  for (int i = 1; i != row; ++i) {
+  for (unsigned int i = 1; i != row; ++i) {
     tilesToBeAddedToBag.push_back(storageRows[row - 1][i]);
   }
 
@@ -111,7 +110,7 @@ std::vector<Tile*> Mosaic::moveTileToGrid(unsigned const int row,
 
 
 void Mosaic::clearOneStorageRow(unsigned const int row) {
-  for (int i = 0; i != row; ++i) {
+  for (unsigned int i = 0; i != row; ++i) {
     storageRows[row - 1][i] = nullptr;
   }
 }
@@ -122,7 +121,7 @@ bool Mosaic::isValidForColour(unsigned const int row, Colour colour) {
   if (row != 0) {
     if (storageRowIsEmpty(row)) {
       // check grid
-      for (int i = 0; i != grid_dim; ++i) {
+      for (unsigned int i = 0; i != grid_dim; ++i) {
         if (mosaicGrid[row - 1][i] != nullptr &&
             mosaicGrid[row - 1][i]->getColour() == colour) {
           returnVal = false;
@@ -147,10 +146,10 @@ Colour Mosaic::getStorageRowColour(unsigned const int row) const {
 
 std::string Mosaic::str() const {
   std::string returnVal = "";
-  for (int i = 0; i != grid_dim; ++i) {
+  for (unsigned int i = 0; i != grid_dim; ++i) {
     returnVal += (std::to_string(i + 1) + ": ");
 
-    for (int m = 0; m < grid_dim - i - 1; ++m) {
+    for (unsigned int m = 0; m < grid_dim - i - 1; ++m) {
       returnVal += "  ";
     }
 
@@ -163,7 +162,7 @@ std::string Mosaic::str() const {
     }
     returnVal += "|| ";
 
-    for (int r = 0; r != grid_dim; ++r) {
+    for (unsigned int r = 0; r != grid_dim; ++r) {
       if (mosaicGrid[i][r] == nullptr) {
         returnVal += ". ";
       } else {
@@ -196,7 +195,7 @@ unsigned int Mosaic::calScore(unsigned const int row,
   }
 
   // horizontal - right
-  int r = col + 1;
+  unsigned int r = col + 1;
   while (mosaicGrid[row - 1][r - 1] != nullptr && r <= grid_dim) {
     h_score++;
     r++;
@@ -211,7 +210,7 @@ unsigned int Mosaic::calScore(unsigned const int row,
   }
 
   // vertical - down
-  int d = row + 1;
+  unsigned int d = row + 1;
   while (mosaicGrid[d - 1][col - 1] != nullptr && d <= grid_dim) {
     v_score++;
     d++;
@@ -237,7 +236,7 @@ bool Mosaic::isStorageRowFull(unsigned const int row) {
 // private
 unsigned int Mosaic::checkStorageRowSize(unsigned const int row) const {
   unsigned int returnVal = 0;
-  for (int i = 0; i != row; ++i) {
+  for (unsigned int i = 0; i != row; ++i) {
     if (storageRows[row - 1][i] != nullptr) {
       ++returnVal;
     }
@@ -248,7 +247,7 @@ unsigned int Mosaic::checkStorageRowSize(unsigned const int row) const {
 // private
 bool Mosaic::storageRowIsEmpty(unsigned const int row) const {
   bool returnVal = true;
-  for (int i = 0; i != row; ++i) {
+  for (unsigned int i = 0; i != row; ++i) {
     if (storageRows[row - 1][i] != nullptr) {
       returnVal = false;
     }
@@ -259,7 +258,7 @@ bool Mosaic::storageRowIsEmpty(unsigned const int row) const {
 // private
 unsigned int Mosaic::findCol(unsigned const int row, Colour colour) const {
   unsigned int col = 0;
-  for (int i = 0; i != grid_dim; ++i) {
+  for (unsigned int i = 0; i != grid_dim; ++i) {
     if (defaultPattern[row - 1][i] == colour) {
       col = i + 1;
     }
@@ -267,14 +266,14 @@ unsigned int Mosaic::findCol(unsigned const int row, Colour colour) const {
   return col;
 }
 
-bool Mosaic::gridSpotOccupied(unsigned const int row, unsigned const int col) {
-  bool returnVal = false;
+bool Mosaic::gridSpotAvailable(unsigned const int row, unsigned const int col) {
+  bool returnVal = true;
 
   if (row > grid_dim || col > grid_dim || row == 0 || col == 0) {
-    returnVal = true;
+    returnVal = false;
   } else {
-    if (mosaicGrid[row][col] != nullptr) {
-      returnVal = true;
+    if (mosaicGrid[row-1][col-1] != nullptr) {
+      returnVal = false;
     }
   }
   return returnVal;

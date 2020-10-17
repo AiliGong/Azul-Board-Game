@@ -62,7 +62,7 @@ build-memtest: Dockerfile.memtest
 
 run-memtest: azul
 	# TODO: use more extensive test file
-	valgrind --leak-check=full ./azul -t tests/save_files/01-sample.azul
+	valgrind --leak-check=full ./azul -t tests/save_files/05-completed.azul
 
 memtest: build-memtest
 	@# Runs in a container because valgrind doesn't currently work under macOS

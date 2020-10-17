@@ -3,13 +3,13 @@
 
 #include <vector>
 
-#include "Constants.h"
+#include "Config.h"
 #include "Factory.h"
 #include "GameHistory.h"
 #include "Player.h"
 #include "TileBag.h"
 #include "BoxLid.h"
-#include "Constants.h"
+#include "Config.h"
 
 // GameEngine implements the state machine shown below.
 //
@@ -84,7 +84,7 @@ class GameEngine {
   Player* next_player;
   unsigned int rounds_played;
   int random_seed;
-  Constants* constant;
+  Config* config;
 
   void loadGameSetUp(const GameHistory* gameHistory);
 
@@ -103,9 +103,10 @@ class GameEngine {
   void firstPlayerSetup();
   Player* getPlayerByName(const std::string playerName) const;
   void decideWinner();
+  int replayMoves(std::vector<int>mannual_moves, int m);
 
  public:
-  GameEngine(int random_seed, Constants* constant);
+  GameEngine(int random_seed, Config* config);
   GameEngine(GameHistory* gameHistory);
   ~GameEngine();
 
@@ -124,7 +125,7 @@ class GameEngine {
   std::vector<Player*> getPlayers() const;
 
   void saveGame(std::string filename) const;
-  Constants* getConstant() const;
+  Config* getconfig() const;
   // move tile into grid for each player, and update points
   void moveTileAfterEachRound();
   bool moveTileMannually(Player* player, unsigned int row, unsigned int col);

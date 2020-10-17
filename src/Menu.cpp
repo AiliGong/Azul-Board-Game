@@ -68,7 +68,12 @@ void Menu::run(std::string& menuOption) {
       menuOption = "4";
     }
   } else if (menuOption == std::string("2")) {
-    loadGame();
+    try {
+      loadGame();
+    } catch (std::invalid_argument*) {
+      exit();
+      menuOption = "4";
+    }
   } else if (menuOption == std::string("3")) {
     printCredits();
   } else if (menuOption == std::string("4")) {
@@ -121,10 +126,14 @@ void Menu::newGame() {
       }
     }
   }
-  Constants* constant = new Constants(stoi(modeOption));
-  this->game = new GameMenu(randomSeed, constant);
-  this->game->newGame();
 
+  if (game != nullptr) { 
+    delete game;
+  }
+
+  Config* config = new Config(stoi(modeOption));
+  this->game = new GameMenu(randomSeed, config);
+  this->game->newGame();
 }
 
 void Menu::loadGame() {

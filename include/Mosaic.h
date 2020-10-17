@@ -45,7 +45,7 @@ class Mosaic {
   BrokenTile* getBrokenTiles() const;
 
   bool isStorageRowFull(unsigned const int row);
-  bool gridSpotOccupied(unsigned const int row, unsigned const int col);
+  bool gridSpotAvailable(unsigned const int row, unsigned const int col);
   unsigned int calScore(unsigned const int row, unsigned const int col) const;
 
  private:

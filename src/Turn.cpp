@@ -5,8 +5,8 @@
 Turn::Turn(unsigned int factory, Tile* tile, unsigned int storage_row)
     : factory(factory), tile(tile), storage_row(storage_row) {}
 
-Turn* Turn::parseCommand(std::string command, Constants* constant) {
-  const std::regex turn_pattern(constant->getTURN_PATTERN());
+Turn* Turn::parseCommand(std::string command, Config* config) {
+  const std::regex turn_pattern(config->getTURN_PATTERN());
 
   std::string turn_command;
   unsigned int factory;
@@ -23,7 +23,7 @@ Turn* Turn::parseCommand(std::string command, Constants* constant) {
   }
 }
 
-Turn::Turn(Turn& other) {
+Turn::Turn(const Turn& other) {
   this->factory = other.factory;
   this->tile = new Tile(*other.tile);
   this->storage_row = other.storage_row;

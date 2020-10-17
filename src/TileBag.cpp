@@ -1,19 +1,22 @@
 #include "TileBag.h"
-#include "Constants.h"
+#include "Config.h"
 #include <random>
 #include <iostream>
+#include <algorithm>
 
 TileBag::TileBag() {
   tile_bag = new LinkedList<Tile*>;
 }
 
-TileBag::TileBag(int randomSeed, Constants* constant) {
+TileBag::TileBag(int randomSeed, Config* config) {
   this->randomSeed = randomSeed;  
-  this->constant = constant;
+  this->config = config;
   this->initialTiledBag();
 }
 
 TileBag::TileBag(TileBag &other) {
+  this->randomSeed = other.randomSeed;  
+  this->config = new Config(*other.config);
   tile_bag = new LinkedList<Tile*>(*other.tile_bag);
 }
 
@@ -33,8 +36,8 @@ void TileBag::initialTiledBag() {
 
 void TileBag::initialStandardBag() {
   Tile* tile;
-  for (int i = 0; i < constant->getTOTAL_NUM_OF_TILE(); ++i) {
-    tile = new Tile(tilecolour[i % constant->getNUM_OF_TILECOLOUR()]);
+  for (unsigned int i = 0; i < config->getTOTAL_NUM_OF_TILE(); ++i) {
+    tile = new Tile(tilecolour[i % config->getNUM_OF_TILECOLOUR()]);
     this->addBack(tile);
   }
 }
@@ -42,8 +45,8 @@ void TileBag::initialStandardBag() {
 void TileBag::initialRandomizedBag() {
   std::vector<Tile*> allTiles;
   Tile* tile;
-  for (int i = 0; i != constant->getTOTAL_NUM_OF_TILE(); ++i) {
-      tile = new Tile(tilecolour[i % constant->getNUM_OF_TILECOLOUR()]);
+  for (unsigned int i = 0; i != config->getTOTAL_NUM_OF_TILE(); ++i) {
+      tile = new Tile(tilecolour[i % config->getNUM_OF_TILECOLOUR()]);
       allTiles.push_back(tile);
   }
   fillBag(allTiles);
@@ -110,3 +113,10 @@ void TileBag::fillBag(std::vector<Tile*> tiles_to_add) {
   }
 }
 
+void TileBag::setRandomSeed(int randomSeed) {
+  this->randomSeed = randomSeed;
+}
+
+void TileBag::setConfig(Config* config) {
+  this->config = config;
+}

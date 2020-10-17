@@ -1,9 +1,9 @@
-#ifndef CONSTANTS_H
-#define CONSTANTS_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
 #include <string>
 
-class Constants
+class Config
 {
 private:
     unsigned int NUM_OF_TILECOLOUR;
@@ -16,7 +16,8 @@ private:
     unsigned int TOTAL_NUM_OF_GAME_ROUND;
     unsigned int NUM_OF_PLAYERS;
     unsigned int BROKEN_TILE_SOLT;
-    bool GREY_MODE;
+    bool grey_mode;
+    bool standard_mode;
 
     // Any single tile indicator
     std::string TILE_PATTERN;
@@ -31,19 +32,22 @@ private:
 
     // Exactly TOTAL_NUM_OF_TILE tile indicators, without separators
     std::string INITIAL_TILES_PATTERN;
+    std::string TILE_BAG_MIDDLE_PATTERN;
+    std::string MANNUAL_MOVE_PATTERN;
 
-    void initialConstants(unsigned int mode);
+    void initialConfig(unsigned int mode);
 
 
 public:
-    Constants(unsigned int mode);
-    ~Constants();
+    Config(unsigned int mode);
+    Config(Config& other);
+
+    ~Config();
     void standardMode();
     void sixTileMode();
     void greyMode();
     void fiveTileGreyMode();
     void sixTileGreyMode();
-
 
     unsigned int getNUM_OF_TILECOLOUR();
     unsigned int getMOSAIC_GRID_DIM();
@@ -56,7 +60,9 @@ public:
     unsigned int getTOTAL_NUM_OF_GAME_ROUND();
     unsigned int getNUM_OF_PLAYERS();
     unsigned int getBROKEN_TILE_SOLT();
-    bool getGREY_MODE();
+    
+    bool isGreyMode();
+    bool isStandardMode();
 
     // Any single tile indicator
     std::string getTILE_PATTERN();
@@ -71,9 +77,9 @@ public:
 
     // Exactly TOTAL_NUM_OF_TILE tile indicators, without separators
     std::string getINITIAL_TILES_PATTERN();
-
-    
+    std::string getMANNUAL_MOVE_PATTERN();
+    std::string getTILE_BAG_MIDDLE_PATTERN();
 
 };
 
-#endif  // CONSTANTS_H
+#endif  // CONFIG_H

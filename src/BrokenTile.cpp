@@ -1,6 +1,5 @@
 #include "BrokenTile.h"
 
-
 BrokenTile::BrokenTile(unsigned int broken_tile_slot) {
     this->broken_tile_slot = broken_tile_slot;
 }
@@ -31,10 +30,10 @@ unsigned int BrokenTile::calculateLostPoints() const {
 }
 
 void BrokenTile::clear() {
-    for (Tile* tile : broken_tiles) {
-        tile = nullptr; //set the pointer to null, 
-                        //tiles need to be added backed to the bag
-    }
+    // for (Tile* tile : broken_tiles) {
+    //     tile = nullptr; //set the pointer to null, 
+    //                     //tiles need to be added backed to the bag
+    // }
 
     broken_tiles.clear();
 }

@@ -3,7 +3,7 @@
 
 #include "LinkedList.h"
 #include "BoxLid.h"
-#include "Constants.h"
+#include "Config.h"
 
 const Colour tilecolour[6] = {Colour::DARK_BLUE, Colour::YELLOW,
                                               Colour::RED, Colour::BLACK,
@@ -12,7 +12,7 @@ class TileBag {
  public:
   TileBag(); //TODO <<=======
   TileBag(TileBag &other);
-  TileBag(int randomSeed, Constants* constant);
+  TileBag(int randomSeed, Config* config);
   ~TileBag();
 
 
@@ -21,7 +21,8 @@ class TileBag {
   unsigned int size() const;
   std::string getAllTileIni() const;
   void fillBag(BoxLid* box_lid);
-
+  void setRandomSeed(int randomSeed);
+  void setConfig(Config* config);
 
  private:
   void initialTiledBag();
@@ -33,7 +34,7 @@ class TileBag {
   void removeFront();
   void clear();
   void fillBag(std::vector<Tile*> tiles_to_add);
-  Constants* constant;
+  Config* config;
 
 };
 

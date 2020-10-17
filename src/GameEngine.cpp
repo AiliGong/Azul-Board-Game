@@ -2,30 +2,31 @@
 #include "Tile.h"
 
 #include <random>
-#include <iostream>
-GameEngine::GameEngine(int random_seed, Constants* constant)
+
+GameEngine::GameEngine(int random_seed, Config* config)
     : game_history(new GameHistory()),
       game_state(GameState::START),
       box_lid(new BoxLid()) {
   this->random_seed = random_seed;
-  this->constant = constant;
+  this->config = config;
   this->game_history->setRandomSeed(this->random_seed);
-  // this->constant = new Constants();//TODO
-  this->tile_bag = new TileBag(random_seed, constant);
-  this->game_history->setConstant(this->constant);
+  this->tile_bag = new TileBag(random_seed, config);
+  this->game_history->setConfig(this->config);
   this->game_history->setInitialTiles(this->tile_bag);
-
+  this->rounds_played = 0;
 }
 
+//parameter gameHistory: the one read from the file
 GameEngine::GameEngine(GameHistory* gameHistory)
-    : game_history(gameHistory), 
+    : game_history(gameHistory),
       game_state(GameState::START),
       box_lid(new BoxLid()) {
+  this->rounds_played = 0;
   this->loadGameSetUp(gameHistory);
 }
 
 GameEngine::~GameEngine() {
-  for (int i = 0; i != players.size(); ++i) {
+  for (unsigned int i = 0; i != players.size(); ++i) {
     delete players[i];
   }
   players.clear();
@@ -41,11 +42,15 @@ GameEngine::~GameEngine() {
 
   // delete game history
   delete game_history;
+  delete box_lid;
 }
 
+//parameter gameHistory: the one read from the file
 void GameEngine::loadGameSetUp(const GameHistory* gameHistory) {
-  this->constant = gameHistory->getConstant();
-  this->tile_bag = gameHistory->getInitialTiles();
+  this->config = gameHistory->getConfig();
+  this->tile_bag = new TileBag(*gameHistory->getInitialTiles());
+  this->random_seed = gameHistory->getRandomSeed();
+
   for (Player* player : gameHistory->getPlayers()) {
     bool first_player = this->players.size() == 0;
     this->players.push_back(player);
@@ -69,7 +74,7 @@ void GameEngine::addPlayer(std::string name) {
   }
 
   bool first_player = this->players.size() == 0;
-  Player* player = new Player(name, first_player, constant);
+  Player* player = new Player(name, first_player, config);
   this->players.push_back(player);
   this->game_history->addPlayer(name);
 
@@ -95,7 +100,9 @@ void GameEngine::startGame() {
   this->initFactories();
   this->startRound();
 
-  if (this->game_history->getTurns().size() > 0) {
+  //if history is loaded
+  if (this->game_history->readFromFile()){
+  // if (this->game_history->getTurns().size() > 0) {
     this->replayTurns();
   }
 }
@@ -108,7 +115,7 @@ void GameEngine::initFactories() {
   fac = nullptr;
 
   // add five factories
-  for (int i = 1; i < constant->getNUM_OF_ALL_FACTORIES(); ++i) {
+  for (unsigned int i = 1; i < config->getNUM_OF_ALL_FACTORIES(); ++i) {
     fac = new Factory(i);
     factories.push_back(fac);
     fac = nullptr;
@@ -118,18 +125,64 @@ void GameEngine::initFactories() {
 }
 
 void GameEngine::replayTurns() {
-  std::vector<const Turn*> turns = this->game_history->getTurns();
-  int i = 0;
+  //deep copy of turns
+  std::vector<const Turn*> turns;
+  Turn* turn_to_replay;
+  for (const Turn* turn : this->game_history->getTurns()) {
+    turn_to_replay = new Turn(*turn);
+    turns.push_back(turn_to_replay);
+  }
+  //bag in the middle
+  TileBag* bag_to_be_added;
+  std::vector<TileBag*> tile_bags_in_game;
+  for (TileBag* tileBag : this->game_history->getBagsInTheMiddle()) {
+    bag_to_be_added = new TileBag(*tileBag);
+    delete box_lid;
+    tile_bags_in_game.push_back(bag_to_be_added);
+  }
+  //move
+  std::vector<int> mannual_moves;
+  for(int move : this->game_history->getMannualMoves()) {
+    mannual_moves.push_back(move);
+  }
 
+  //reset game history for start the game
+  this->game_history->resetAfterLoading();
+  unsigned int i = 0;
+  unsigned int m = 0;
+  unsigned int b = 0;
   while (i < turns.size() && this->game_state != GameState::END_OF_GAME) {
     while (i < turns.size() && this->game_state != GameState::END_OF_ROUND) {
       this->playTurn(turns[i]);
       ++i;
     }
     if (this->game_state == GameState::END_OF_ROUND) {
-      this->startRound();
+      //move tile after each round
+      if (mannual_moves.size() > 0 && m < mannual_moves.size()) {
+        m = this->replayMoves(mannual_moves, m);
+      } else {
+        this->moveTileAfterEachRound();
+      }
+      //file factories
+      if (tile_bags_in_game.size() > 0 && this->tile_bag->size() == 0) {
+        this->tile_bag = tile_bags_in_game[b];
+        ++b;
+      } 
+      this->fillFactories();
+
+      this->firstPlayerSetup();
+      this->game_state = GameState::START_OF_ROUND;
     }
   }
+
+  if (this->game_state == GameState::END_OF_GAME) {
+    if (mannual_moves.size() > 0 && m < mannual_moves.size()) {
+        m = this->replayMoves(mannual_moves, m);
+    } else {
+      this->moveTileAfterEachRound();
+    }
+  }
+
 }
 
 void GameEngine::startRound() {
@@ -150,8 +203,8 @@ void GameEngine::startRound() {
 
 void GameEngine::fillFactories() {
   // skips central factory
-  for (int i = 1; i != constant->getNUM_OF_ALL_FACTORIES(); ++i) {
-    for (int j = 0; j != constant->getNUM_OF_TILES_EACH_FAC(); ++j) {
+  for (unsigned int i = 1; i != config->getNUM_OF_ALL_FACTORIES(); ++i) {
+    for (unsigned int j = 0; j != config->getNUM_OF_TILES_EACH_FAC(); ++j) {
       if (this->tile_bag->size() == 0) {
         tile_bag->fillBag(box_lid);
         this->game_history->addTileBagInGame(tile_bag);
@@ -180,8 +233,8 @@ bool GameEngine::playerMovement(Player* player, const Turn* turn) {
   unsigned int row = turn->getPatternLine();
 
   bool factory_is_legal = factories[facNum]->colourExists(colour) &&
-                          row <= constant->getMOSAIC_GRID_DIM() && 
-                          facNum <= constant->getNUM_OF_FACTORIES();
+                          row <= config->getMOSAIC_GRID_DIM() && 
+                          facNum <= config->getNUM_OF_FACTORIES();
   bool row_is_legal = player->getMosaic()->isValidForColour(row, colour);
 
   if (factory_is_legal && row_is_legal) {
@@ -194,13 +247,11 @@ bool GameEngine::playerMovement(Player* player, const Turn* turn) {
   if (checkEndOfRound()) {
     ++rounds_played;
 
-    bool game_over = (rounds_played == constant->getTOTAL_NUM_OF_GAME_ROUND());
+    bool game_over = (rounds_played == config->getTOTAL_NUM_OF_GAME_ROUND());
     if (game_over) {
       game_state = GameState::END_OF_GAME;
-      // moveTileAfterEachRound();
     } else {
       game_state = GameState::END_OF_ROUND;
-      // moveTileAfterEachRound();
     }
   }
 
@@ -247,9 +298,9 @@ void GameEngine::placeTilesToStorageRow(Player* player, const Turn* turn) {
 }
 
 void GameEngine::updateNextPlayer() {
-  int next_player_position = 0;
+  unsigned int next_player_position = 0;
 
-  for (int i = 0; i != players.size(); ++i) {
+  for (unsigned int i = 0; i != players.size(); ++i) {
     if (players[i] == next_player) {
       next_player_position = i;
     }
@@ -295,7 +346,7 @@ void GameEngine::moveTileAfterEachRound(Player* player) {
   //  update points for player
 
   int points = 0;
-  for (int i = 1; i != constant->getMOSAIC_GRID_DIM() + 1; ++i) {
+  for (unsigned int i = 1; i != config->getMOSAIC_GRID_DIM() + 1; ++i) {
     if (player->getMosaic()->isStorageRowFull(i)) {
       Colour colour = player->getMosaic()->getStorageRowColour(i);
       for (Tile* tile : player->getMosaic()->moveTileToGrid(i)) {
@@ -342,7 +393,7 @@ void GameEngine::firstPlayerSetup() {
 Player* GameEngine::getPlayerByName(const std::string playerName) const {
   int postion = -1;
 
-  for (int i = 0; i != players.size(); ++i) {
+  for (unsigned int i = 0; i != players.size(); ++i) {
     if (players[i]->getName() == playerName) {
       postion = i;
     }
@@ -357,8 +408,8 @@ void GameEngine::saveGame(std::string filename) const {
   this->game_history->saveToFile(filename);
 }
 
-Constants* GameEngine::getConstant() const {
-  return this->constant;
+Config* GameEngine::getconfig() const {
+  return this->config;
 }
 
 bool GameEngine::moveTileMannually(Player* player, unsigned int row, unsigned int col) {
@@ -367,18 +418,20 @@ bool GameEngine::moveTileMannually(Player* player, unsigned int row, unsigned in
   }
 
   Mosaic* mosaic = player->getMosaic();
-  bool occupied = mosaic->gridSpotOccupied(row, col);
+  bool available = mosaic->gridSpotAvailable(row, col);
 
-  if(!occupied) {
+  if(available) {
     for (Tile* tile : mosaic->moveTileToGrid(row, col)) {
       box_lid->addBack(tile);
     }
-  }
-  // update points
-  int points = mosaic->calScore(row, col);
-  player->updateScoreBy(points);
+    // update points
+    int points = mosaic->calScore(row, col);
+    player->updateScoreBy(points);
 
-  return !occupied;
+    this->game_history->addMannaulMove(col);
+  }
+
+  return available;
 }
 
 void GameEngine::moveBrokenTileBack(Player* player) {
@@ -399,3 +452,18 @@ void GameEngine::moveBrokenTileBack(Player* player) {
   player->updateScoreBy(points);
 }
 
+int GameEngine::replayMoves(std::vector<int>mannual_moves, int m) {
+  Mosaic* mosaic;
+  for (Player* player : this->getPlayers()) {
+    mosaic = player->getMosaic();
+    for (unsigned int i = 1; i != config->getMOSAIC_GRID_DIM() + 1; ++i) {
+      if (mosaic->isStorageRowFull(i)) {
+        this->moveTileMannually(player, i, mannual_moves[m]);
+        ++m;
+      }
+    }
+    moveBrokenTileBack(player);
+
+  }
+  return m;
+}

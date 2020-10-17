@@ -4,12 +4,12 @@
 #include <string>
 
 #include "Mosaic.h"
-#include "Constants.h"
+#include "Config.h"
 
 class Player {
 
  public:
-  Player(std::string name, bool is_first_player, Constants* constant);
+  Player(std::string name, bool is_first_player, Config* config);
   ~Player();
   void setScore(unsigned int score);
   void updateScoreBy(int points);
@@ -26,7 +26,7 @@ class Player {
   int score;
   Mosaic* mosaic;
   bool is_first_player;
-  Constants* constant;
+  Config* config;
 
 };
 

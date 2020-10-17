@@ -48,6 +48,8 @@ LinkedList<T>::LinkedList(const LinkedList& other) {
             current = current->getNext();
         }
     }
+
+    this->size = other.size;
 }
 
 template<typename T>

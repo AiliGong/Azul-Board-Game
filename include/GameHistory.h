@@ -7,7 +7,7 @@
 #include "TileBag.h"
 #include "Player.h"
 #include "Turn.h"
-#include "Constants.h"
+#include "Config.h"
 
 class GameHistory {
  public:
@@ -35,20 +35,32 @@ class GameHistory {
   void addPlayer(std::string player_name);
   void setRandomSeed(int random_seed);
   void addTileBagInGame(TileBag* tile_bag);
-  Constants* getConstant() const;
-  void setConstant(Constants* constant);
-
-
+  Config* getConfig() const;
+  void setConfig(Config* config);
+  int getRandomSeed() const;
+  bool readFromFile() const;
+  void resetAfterLoading();
+  void addMannaulMove(const unsigned int move);
+  std::vector<int> getMannualMoves();
+  std::vector<TileBag*> getBagsInTheMiddle();
 
  private:
   void readSaveFile(std::istream& file);
+  void readSaveFileAdvanced(std::istream& file);
+
   void writeSaveFile(std::ostream& out) const;
+  void writeSaveFileStandard(std::ostream& out) const;
+  void writeSaveFileAdvanced(std::ostream& out) const;
+
+
   TileBag* initial_tiles;
   std::set<std::string> player_names;
   std::vector<const Turn*> turns;
+  std::vector<int> mannual_moves;
   int random_seed;
   std::vector<TileBag*> tile_bags_in_game;
-  Constants* constant;
+  Config* config;
+  bool read_from_file;
 
 };
 

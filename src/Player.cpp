@@ -1,11 +1,11 @@
 #include "Player.h"
 
-Player::Player(std::string name, bool is_first_player, Constants* constant) {
+Player::Player(std::string name, bool is_first_player, Config* config) {
   this->name = name;
   score = 0;
   this->is_first_player = is_first_player;
-  this->constant = constant;
-  mosaic = new Mosaic(constant->getMOSAIC_GRID_DIM(), constant->getBROKEN_TILE_SOLT());
+  this->config = config;
+  mosaic = new Mosaic(config->getMOSAIC_GRID_DIM(), config->getBROKEN_TILE_SOLT());
 }
 
 Player::~Player() {
