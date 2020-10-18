@@ -98,6 +98,8 @@ void Config::sixTileMode() {
 void Config::fiveTileGreyMode() {
     this->standardMode();
     this->grey_mode = true;
+    standard_mode = false;
+
 }
 
 void Config::sixTileGreyMode() {

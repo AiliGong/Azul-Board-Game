@@ -1,0 +1,25 @@
+Factories:
+0: F
+1: U Y U Y
+2: Y U R Y
+3: L Y R B
+4: U L L B
+5: B B U Y
+
+Score for a: 1
+Mosaic for a:
+1:         . || . . . . . 
+2:       . . || L . . . . 
+3:     . R R || . . . . . 
+4:   . B B B || . . . . . 
+5: . . Y Y Y || . . . . . 
+broken:
+
+Score for b: 2
+Mosaic for b:
+1:         . || . . . . . 
+2:       . . || U . . . . 
+3:     . . . || L . . . . 
+4:   . R R R || . . . . . 
+5: . . . U U || . . . . . 
+broken:

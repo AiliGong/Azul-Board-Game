@@ -4,6 +4,9 @@ BoxLid::BoxLid() {
 }
 
 BoxLid::~BoxLid() {
+    for (Tile* tile : this->tiles) {
+        delete tile;
+    }
 }
 
 std::vector<Tile*> BoxLid::getTiles() {

@@ -258,6 +258,17 @@ bool Mosaic::storageRowIsEmpty(unsigned const int row) const {
 // private
 unsigned int Mosaic::findCol(unsigned const int row, Colour colour) const {
   unsigned int col = 0;
+
+  if (this->grid_dim == 5) {
+    col = findColFive(row, colour);
+  } else if (this->grid_dim == 6) {
+    col = findColSix(row, colour);
+  }
+  return col;
+}
+
+unsigned int Mosaic::findColFive(unsigned const int row, Colour colour) const {
+  unsigned int col = 0;
   for (unsigned int i = 0; i != grid_dim; ++i) {
     if (defaultPattern[row - 1][i] == colour) {
       col = i + 1;
@@ -265,6 +276,16 @@ unsigned int Mosaic::findCol(unsigned const int row, Colour colour) const {
   }
   return col;
 }
+unsigned int Mosaic::findColSix(unsigned const int row, Colour colour) const {
+  unsigned int col = 0;
+  for (unsigned int i = 0; i != grid_dim; ++i) {
+    if (sixTilePattern[row - 1][i] == colour) {
+      col = i + 1;
+    }
+  }
+  return col;
+}
+
 
 bool Mosaic::gridSpotAvailable(unsigned const int row, unsigned const int col) {
   bool returnVal = true;

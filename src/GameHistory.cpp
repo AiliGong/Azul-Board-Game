@@ -13,10 +13,6 @@ GameHistory::GameHistory() {
   this->read_from_file = false;
 }
 
-// GameHistory::GameHistory(TileBag* initial_tiles,
-//                          std::set<std::string> player_names)
-//     : initial_tiles(initial_tiles), player_names(player_names) {}
-
 GameHistory::GameHistory(GameHistory& other) {
   this->initial_tiles = new TileBag(*other.initial_tiles);
   this->player_names = other.player_names;
@@ -221,13 +217,9 @@ void GameHistory::readSaveFileAdvanced(std::istream& file) {
     this->initial_tiles->addBack(new Tile(tile_char));
   }
   
-  //bags in the middle
-  
   const std::regex move_pattern(config->getMANNUAL_MOVE_PATTERN());
   const std::regex bags_in_middle(config->getTILE_BAG_MIDDLE_PATTERN());
 
-  // turns
-  // then any number of turns
   TileBag* tileBag;
   while (std::getline(file, line)) {
     if (std::regex_match(line, move_pattern)) {

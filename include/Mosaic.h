@@ -11,6 +11,12 @@ const int defaultPattern[5][5] = {{0, 1, 2, 3, 4},
                                   {3, 4, 0, 1, 2},
                                   {2, 3, 4, 0, 1},
                                   {1, 2, 3, 4, 0}};
+const int sixTilePattern[6][6] = {{0, 1, 2, 3, 4, 5},
+                                  {5, 0, 1, 2, 3, 4},
+                                  {4, 5, 0, 1, 2, 3},
+                                  {3, 4, 5, 0, 1, 2},
+                                  {2, 3, 4, 5, 0, 1},
+                                  {1, 2, 3, 4, 5, 0}};
 
 class Mosaic {
  public:
@@ -61,6 +67,9 @@ class Mosaic {
   unsigned int checkStorageRowSize(unsigned const int row) const;
   bool storageRowIsEmpty(unsigned const int row) const;
   unsigned int findCol(unsigned const int row, Colour colour) const;
+  unsigned int findColFive(unsigned const int row, Colour colour) const;
+  unsigned int findColSix(unsigned const int row, Colour colour) const;
+
 };
 
 #endif  // MOSAIC_H

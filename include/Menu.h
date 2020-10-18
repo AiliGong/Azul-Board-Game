@@ -4,6 +4,12 @@
 #include "GameMenu.h"
 
 class Menu {
+ public:
+  Menu();
+  Menu(const char* randomSeed);
+  ~Menu();
+  void start();
+  
  private:
   GameMenu* game;
   int randomSeed;
@@ -16,13 +22,7 @@ class Menu {
   void exit();
   void newGameMenu();
 
- public:
-  Menu();
-  Menu(const char* randomSeed);
 
-  ~Menu();
-
-  void start();
 };
 
 #endif  // MENU_H

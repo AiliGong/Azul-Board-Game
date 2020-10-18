@@ -4,11 +4,11 @@
 #include <string>
 
 enum Colour {
-  RED,
-  YELLOW,
   DARK_BLUE,
-  LIGHT_BLUE,
+  YELLOW,
+  RED,
   BLACK,
+  LIGHT_BLUE,
   ORANGE,
   FIRST_PLAYER,
   NONE,

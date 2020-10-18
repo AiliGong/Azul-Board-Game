@@ -11,11 +11,17 @@ Menu::Menu() {
 }
 
 Menu::Menu(const char* randomSeed) {
-  this->randomSeed = atoi(randomSeed);
+  int seed = atoi(randomSeed);
+  if (seed < 0) {
+    seed = 0;
+  }
+  this->randomSeed = seed;
 }
 
 Menu::~Menu() {
-  delete this->game;
+  if (this->game != nullptr) {
+    delete this->game;
+  }
 }
 
 void Menu::start() {

@@ -26,6 +26,7 @@ GameEngine::GameEngine(GameHistory* gameHistory)
 }
 
 GameEngine::~GameEngine() {
+  //delete player
   for (unsigned int i = 0; i != players.size(); ++i) {
     delete players[i];
   }

@@ -20,7 +20,9 @@ int main(int argc, char const* argv[]) {
     delete menu;
   } else {
     std::cout << argv[0] << ": illegal arguments" << std::endl
-              << "usage: " << argv[0] << " [-t save-game-file]";
+              << "Help: "<< std::endl
+              << "Testing mode: "<< argv[0] << " [-t save-game-file]"<< std::endl
+              << "Add randomness: "<< argv[0] << " [-s random-seed]"<< std::endl;
   }
 
   return EXIT_SUCCESS;

@@ -128,7 +128,7 @@ void GameMenu::playTurn() {
     std::getline(std::cin, turn_command);
 
     try {
-      turn = Turn::parseCommand(turn_command, config);
+      turn = Turn::parseCommand(turn_command, ge->getconfig());
       turn_success = this->ge->playTurn(turn);
       if (!turn_success) {
         std::cout << "Turn not possible at this time" << std::endl;

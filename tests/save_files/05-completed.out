@@ -1,26 +1,25 @@
-Winner is b
 Factories:
-0:
+0: F
 1:
 2:
 3:
 4:
 5:
 
-Score for a: 18
+Score for a: 37
 Mosaic for a:
-1:         U || R Y B . .
-2:       L L || U R . B .
-3:     Y Y Y || L U . . B
-4:   L L L L || . . . R Y
-5: . . Y Y Y || . . L . .
-broken: Y L
+1:         . || B Y R U . 
+2:       . . || L B . R U 
+3:     . . . || U L B Y . 
+4:   . . . . || R . L . Y 
+5: . . Y Y Y || . . . L . 
+broken:
 
-Score for b: 20
+Score for b: 44
 Mosaic for b:
-1:         R || . Y B L .
-2:       R R || U . Y B .
-3:     U U U || L . R Y B
-4:   B B B B || . . U . .
-5: . U U U U || . . . . R
-broken: F B B R
+1:         . || B Y R . L 
+2:       . . || . B Y R U 
+3:     . . . || U L B Y R 
+4:   . . . . || . U . B . 
+5: . U U U U || . R . . . 
+broken:
