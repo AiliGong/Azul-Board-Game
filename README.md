@@ -3,7 +3,7 @@
 A console game simulating the board game <a src="https://en.wikipedia.org/wiki/Azul_(board_game)"> Azul </a>. 
 
 ## Learning Outcome
-- Data Stucture: Linked Lists, 2D Arrays, Vectors, 
+- Data Stucture: Linked Lists, 2D Arrays, Vectors
 - Pointers & Dynamic Memory Management
 - File Processing
 - Polymorphism and Encapsulation
