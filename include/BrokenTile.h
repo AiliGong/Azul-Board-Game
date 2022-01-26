@@ -6,12 +6,12 @@
 
 #include "Tile.h"
 
-#define NO_OF_BROEKN_TILE_LOSE_POINTS       7
+// #define NO_OF_BROEKN_TILE_LOSE_POINTS       7
 
 class BrokenTile
 {
 public:
-    BrokenTile();
+    BrokenTile(unsigned int broken_tile_slot);
     ~BrokenTile();
 
     //add a broken tile to the back
@@ -32,6 +32,7 @@ public:
 
 private:
     std::vector<Tile*> broken_tiles;
+    unsigned int broken_tile_slot;
 
 };
 

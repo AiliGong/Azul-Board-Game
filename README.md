@@ -1,8 +1,14 @@
-# APT 2020 Assignment 2
+# Azul Board Game
 
-**Team name: ACS**
+A console game simulating the board game <a src="https://en.wikipedia.org/wiki/Azul_(board_game)"> Azul </a>. 
 
-## Group members
-* Aili Gong (s3443647)
-* Catherine Thomas (s3784710)
-* Sam Mellor (s3491308)
+## Learning Outcome
+- Data Stucture: Linked Lists, 2D Arrays, Vectors, 
+- Pointers & Dynamic Memory Management
+- File Processing
+- Polymorphism and Encapsulation
+- Program management
+- Unit testing
+- Usage of C++14 & the C++ STL
+
+Grade: 40 out of 45

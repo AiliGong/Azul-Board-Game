@@ -1,13 +1,30 @@
 #include "GameMenu.h"
 
-GameMenu::GameMenu() : ge(new GameEngine()) {}
+GameMenu::GameMenu() {
+  this->randomSeed = -1;
+  this->config = new Config(1);
+  ge = new GameEngine(randomSeed, config);
+}
+
+GameMenu::GameMenu(int randomSeed, Config* config) {
+  this->config = config;
+  this->randomSeed = randomSeed;
+  ge = new GameEngine(randomSeed, config);
+}
+
+GameMenu::~GameMenu() {
+  if (this->ge != nullptr) {
+    delete ge;
+  }
+}
 
 void GameMenu::newGame() {
   std::cout << "Starting a New Game" << std::endl;
   std::cout << std::endl;
 
   std::string player_name;
-  for (int i = 0; i != NUM_OF_PLAYERS; ++i) {
+  int num_of_players = ge->getconfig()->getNUM_OF_PLAYERS();
+  for (int i = 0; i != num_of_players; ++i) {
     std::cout << "Enter a name for player " << i + 1 << std::endl;
     std::cout << "> ";
     std::getline(std::cin, player_name);
@@ -41,7 +58,7 @@ void GameMenu::resumeGame(std::string filename) {
   std::cout << std::endl
             << "Azul game successfully loaded" << std::endl
             << std::endl;
-
+  
   this->play();
 }
 
@@ -65,6 +82,8 @@ void GameMenu::play() {
   }
 
   assert(this->ge->getState() == GameState::END_OF_GAME);
+  //move tile
+  this->moveTileAfterRound();
 
   std::cout << "=== GAME OVER ===" << std::endl << std::endl;
 
@@ -73,6 +92,7 @@ void GameMenu::play() {
 
 void GameMenu::playRound() {
   if (this->ge->getState() == GameState::END_OF_ROUND) {
+    this->moveTileAfterRound();
     this->ge->startRound();
   }
 
@@ -81,7 +101,6 @@ void GameMenu::playRound() {
          this->ge->getState() != GameState::END_OF_GAME) {
     this->playTurn();
   }
-
   std::cout << "=== END OF ROUND ===" << std::endl << std::endl;
 }
 
@@ -109,7 +128,7 @@ void GameMenu::playTurn() {
     std::getline(std::cin, turn_command);
 
     try {
-      turn = Turn::parseCommand(turn_command);
+      turn = Turn::parseCommand(turn_command, ge->getconfig());
       turn_success = this->ge->playTurn(turn);
       if (!turn_success) {
         std::cout << "Turn not possible at this time" << std::endl;
@@ -146,7 +165,7 @@ void GameMenu::printScores() const {
   bool draw = false;
 
   for (const Player* player : this->ge->getPlayers()) {
-    std::cout << player->getName() << ": " << player->getScore();
+    std::cout << player->getName() << ": " << player->getScore() << " ";
     if (!winner || player->getScore() > winner->getScore()) {
       winner = player;
     } else if (player->getScore() == winner->getScore()) {
@@ -180,3 +199,54 @@ void GameMenu::testMode(std::string filename) {
     std::cout << e.what() << std::endl;
   }
 }
+
+void GameMenu::moveTileAfterRound() {
+  bool greyMode = this->config->isGreyMode();
+  if(!greyMode) {
+    this->ge->moveTileAfterEachRound();
+  } else {
+    this->moveTileManually();
+  }
+}
+
+void GameMenu::moveTileManually() {
+  for (Player* player : this->ge->getPlayers()) {
+    std::cout << "Tile move for player "<< player->getName() << ": "<< std::endl;
+    printMosaic(player->getName());
+    this->moveTileManually(player);
+    this->ge->moveBrokenTileBack(player);
+  }
+}
+
+void GameMenu::moveTileManually(Player* player) {
+  std::string col;
+  for (unsigned int i = 1; i != config->getMOSAIC_GRID_DIM() + 1; ++i) {
+    if (player->getMosaic()->isStorageRowFull(i)) {
+      bool turn_success = false;
+
+      while (!turn_success) {
+        std::cout << "Please enter the column number for the tile in the "
+                  << i << " row"<< std::endl;
+        std::cout << "> ";
+        std::cin.peek();
+        std::getline(std::cin, col);
+
+        if (!std::cin.good()) {
+          throw new std::invalid_argument("EOF");
+        }
+        try {
+          int col_num = std::stoi(col);
+          turn_success = this->ge->moveTileMannually(player, i, col_num);
+          if(!turn_success) {
+            std::cout << "Turn not possible at this time" << std::endl;
+          }
+        } catch (std::runtime_error& e) {
+          std::cout << "Invalid input" << std::endl;
+        }
+      }
+      std::cout << "Move successful." << std::endl << std::endl;
+    }    
+  }
+  this->ge->moveBrokenTileBack(player);
+}
+

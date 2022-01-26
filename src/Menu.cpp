@@ -6,10 +6,22 @@
 #include "GameHistory.h"
 #include "GameMenu.h"
 
-Menu::Menu() {}
+Menu::Menu() {
+  this->randomSeed = -1;
+}
+
+Menu::Menu(const char* randomSeed) {
+  int seed = atoi(randomSeed);
+  if (seed < 0) {
+    seed = 0;
+  }
+  this->randomSeed = seed;
+}
 
 Menu::~Menu() {
-  delete this->game;
+  if (this->game != nullptr) {
+    delete this->game;
+  }
 }
 
 void Menu::start() {
@@ -62,7 +74,12 @@ void Menu::run(std::string& menuOption) {
       menuOption = "4";
     }
   } else if (menuOption == std::string("2")) {
-    loadGame();
+    try {
+      loadGame();
+    } catch (std::invalid_argument*) {
+      exit();
+      menuOption = "4";
+    }
   } else if (menuOption == std::string("3")) {
     printCredits();
   } else if (menuOption == std::string("4")) {
@@ -96,7 +113,32 @@ void Menu::printCredits() {
 }
 
 void Menu::newGame() {
-  this->game = new GameMenu();
+  std::string modeOption;
+
+  bool validInput = false;
+  
+  while (!validInput) {
+    this->newGameMenu();
+    std::cout << "> ";
+    std::getline(std::cin, modeOption);
+    if (modeOption == std::string("1") || modeOption == std::string("2") ||
+        modeOption == std::string("3") ||modeOption == std::string("4")) {
+      validInput = true;
+    } else {
+      if (std::cin.good()) {
+        std::cout << "Invalid input" << std::endl;
+      } else {
+        throw new std::invalid_argument("EOF");
+      }
+    }
+  }
+
+  if (game != nullptr) { 
+    delete game;
+  }
+
+  Config* config = new Config(stoi(modeOption));
+  this->game = new GameMenu(randomSeed, config);
   this->game->newGame();
 }
 
@@ -109,4 +151,15 @@ void Menu::loadGame() {
 
   this->game = new GameMenu();
   this->game->resumeGame(filename);
+}
+
+void Menu::newGameMenu() {
+  std::cout << std::endl;
+  std::cout << "Please choose game mode" << std::endl;
+  std::cout << "----" << std::endl;
+  std::cout << "1. Standard Mode" << std::endl;
+  std::cout << "2. Six Tile Colour Mode" << std::endl;
+  std::cout << "3. Five Tile Grey Mode" << std::endl;
+  std::cout << "4. Six Tile Grey Mode" << std::endl;
+  std::cout << std::endl;
 }

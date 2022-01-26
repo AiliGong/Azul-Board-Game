@@ -38,16 +38,18 @@ LinkedList<T>::LinkedList(const LinkedList& other) {
         head = nullptr;
     }
     else {
-        head = new Node<T>(other.head->getTile());
+        head = new Node<T>(other.head->getValue());
         Node<T> *current = head;
         Node<T> *otherHead = other.head;
         Node<T> *temp = otherHead;
         while (temp->getNext() != nullptr) {
-            current->setNext(new Node<T>(temp->getNext()->getTile()));
+            current->setNext(new Node<T>(temp->getNext()->getValue()));
             temp = temp->getNext();
             current = current->getNext();
         }
     }
+
+    this->size = other.size;
 }
 
 template<typename T>

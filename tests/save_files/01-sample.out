@@ -1,16 +1,16 @@
 Factories:
-0: F L Y R U B Y
-1: B Y R U
+0: F R B
+1: R Y Y U
 2:
 3:
-4: R U L B
-5: Y R U L
+4: R R U U
+5: R Y B L
 
 Score for A: 0
 Mosaic for A:
 1:         . || . . . . . 
 2:       . . || . . . . . 
-3:     . . B || . . . . . 
+3:     B B B || . . . . . 
 4:   . . . . || . . . . . 
 5: . . . . . || . . . . . 
 broken:
@@ -19,7 +19,7 @@ Score for B: 0
 Mosaic for B:
 1:         . || . . . . . 
 2:       . . || . . . . . 
-3:     . . L || . . . . . 
+3:     L L L || . . . . . 
 4:   . . . . || . . . . . 
 5: . . . . . || . . . . . 
 broken:

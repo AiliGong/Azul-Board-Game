@@ -22,7 +22,7 @@ std::vector<Tile*> Factory::getAllTiles() const {
 std::vector<Tile*> Factory::popTiles(Colour colour) {
   // copy all tiles in colour
   std::vector<Tile*> tiles_to_return;
-  for (int i = 0; i != tiles.size(); ++i) {
+  for (unsigned int i = 0; i != tiles.size(); ++i) {
     if (tiles[i]->getColour() == colour) {
       tiles_to_return.push_back(tiles[i]);
       tiles[i] = nullptr;
@@ -31,7 +31,7 @@ std::vector<Tile*> Factory::popTiles(Colour colour) {
 
   // copy all none null tiles
   std::vector<Tile*> temp;
-  for (int i = 0; i != tiles.size(); ++i) {
+  for (unsigned int i = 0; i != tiles.size(); ++i) {
     if (tiles[i] != nullptr) {
       temp.push_back(tiles[i]);
     }

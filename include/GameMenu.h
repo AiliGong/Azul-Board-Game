@@ -5,20 +5,28 @@
 #include <iostream>
 
 #include "GameEngine.h"
+#include "Config.h"
 
 class GameMenu {
  private:
   GameEngine* ge;
-
+  int randomSeed;
+  Config* config;
   // load a saved game
   void loadGame(std::string filename);
 
   void printFactories() const;
   void printMosaic(std::string player_name) const;
   void printScores() const;
+  void moveTileAfterRound();
+  void moveTileManually();
+  void moveTileManually(Player* player);
+
 
  public:
   GameMenu();
+  GameMenu(int randomSeed, Config* config);
+  ~GameMenu();
 
   // start a new game
   void newGame();

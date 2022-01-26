@@ -3,16 +3,16 @@
 
 #include <string>
 
-#include "Constants.h"
+#include "Config.h"
 #include "Tile.h"
 
 class Turn {
  public:
   Turn(unsigned int factory, Tile* tile, unsigned int storage_row);
-  Turn(Turn& other);
+  Turn(const Turn& other);
   ~Turn();
 
-  static Turn* parseCommand(std::string command);
+  static Turn* parseCommand(std::string command, Config* config);
 
   unsigned int getFactory() const;
   Tile* getTile() const;

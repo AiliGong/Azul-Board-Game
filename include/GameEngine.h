@@ -3,11 +3,13 @@
 
 #include <vector>
 
-#include "Constants.h"
+#include "Config.h"
 #include "Factory.h"
 #include "GameHistory.h"
 #include "Player.h"
 #include "TileBag.h"
+#include "BoxLid.h"
+#include "Config.h"
 
 // GameEngine implements the state machine shown below.
 //
@@ -76,10 +78,13 @@ class GameEngine {
   GameHistory* game_history;
   GameState game_state;
   TileBag* tile_bag;
+  BoxLid* box_lid;
   std::vector<Player*> players;
   std::vector<Factory*> factories;
   Player* next_player;
   unsigned int rounds_played;
+  int random_seed;
+  Config* config;
 
   void loadGameSetUp(const GameHistory* gameHistory);
 
@@ -93,16 +98,15 @@ class GameEngine {
   void placeTilesToStorageRow(Player* player, const Turn* turn);
   void updateNextPlayer();
   bool checkEndOfRound();
-  // move tile into grid for each player, and update points
-  void moveTileAfterEachRound();
   void moveTileAfterEachRound(Player* player);
 
   void firstPlayerSetup();
   Player* getPlayerByName(const std::string playerName) const;
   void decideWinner();
+  int replayMoves(std::vector<int>mannual_moves, int m);
 
  public:
-  GameEngine();
+  GameEngine(int random_seed, Config* config);
   GameEngine(GameHistory* gameHistory);
   ~GameEngine();
 
@@ -121,6 +125,11 @@ class GameEngine {
   std::vector<Player*> getPlayers() const;
 
   void saveGame(std::string filename) const;
+  Config* getconfig() const;
+  // move tile into grid for each player, and update points
+  void moveTileAfterEachRound();
+  bool moveTileMannually(Player* player, unsigned int row, unsigned int col);
+  void moveBrokenTileBack(Player* player);
 };
 
 #endif  // GAMEENGINE_H
