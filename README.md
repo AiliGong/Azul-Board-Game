@@ -1,8 +1,10 @@
-# APT 2020 Assignment 2
+## Azul Board Game
 
-**Team name: ACS**
-
-## Group members
-* Aili Gong (s3443647)
-* Catherine Thomas (s3784710)
-* Sam Mellor (s3491308)
+Linked Lists, Arrays, Vectors, Binary Search Trees
+Pointers & Dynamic Memory Management
+File Processing
+Polymorphism and Encapsulation
+Program state management
+Exception Handling
+Unit testing
+Usage of C++14 & the C++ STL
